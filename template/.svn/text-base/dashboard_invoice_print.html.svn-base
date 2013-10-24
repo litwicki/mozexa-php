@@ -1,0 +1,9 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="overall_header.html"}
+{include file="dashboard_invoice_details.html"}
+{include file="overall_footer.html"}

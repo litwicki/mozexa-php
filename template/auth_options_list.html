@@ -1,0 +1,72 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div class="ui-helper-reset ui-helper-clearfix ui-reset ui-widget">
+<table style="width: 100%;">
+	<tr>
+		<td>
+		<div class="row">
+			<h3><span class="invoice ico">Invoices</span></h3>
+			{section name=auth loop=$authrow_invoice}
+				<input type="checkbox" class="ui-custom-input"  name="{$authrow_invoice[auth].AUTH_OPTION}" id="{$authrow_invoice[auth].AUTH_OPTION}" value="{$authrow_invoice[auth].AUTH_OPTION_ID}"{if $authrow_invoice[auth].AUTH_SETTING} checked="checked"{/if} />
+				<label for="{$authrow_invoice[auth].AUTH_OPTION}"><span class="{$authrow_invoice[auth].AUTH_ICO} ico">{$authrow_invoice[auth].AUTH_OPTION_CLEAN}</span></label>
+			{/section}
+		</div>
+			
+		<div class="row">
+		<h3 class="ui-reset ui-clearfix ui-component"><span class="projects ico">Projects</span></h3>
+		{section name=auth loop=$authrow_project}
+			<input type="checkbox" class="ui-custom-input"  name="{$authrow_project[auth].AUTH_OPTION}" id="{$authrow_project[auth].AUTH_OPTION}" value="{$authrow_project[auth].AUTH_OPTION_ID}"{if $authrow_project[auth].AUTH_SETTING} checked="checked"{/if} />
+			<label for="{$authrow_project[auth].AUTH_OPTION}"><span class="{$authrow_project[auth].AUTH_ICO} ico">{$authrow_project[auth].AUTH_OPTION_CLEAN}</span></label>
+		{/section}
+		</div>
+		
+		<div class="row">
+		<h3><span class="tasks ico">Tasks</span></h3>
+		{section name=auth loop=$authrow_task}
+			<input type="checkbox" class="ui-custom-input"  name="{$authrow_task[auth].AUTH_OPTION}" id="{$authrow_task[auth].AUTH_OPTION}" value="{$authrow_task[auth].AUTH_OPTION_ID}"{if $authrow_task[auth].AUTH_SETTING} checked="checked"{/if} />
+			<label for="{$authrow_task[auth].AUTH_OPTION}"><span class="{$authrow_task[auth].AUTH_ICO} ico">{$authrow_task[auth].AUTH_OPTION_CLEAN}</span></label>
+		{/section}
+		</div>
+		
+		<div class="row">
+		<h3><span class="messages ico">Messages</span></h3>
+		{section name=auth loop=$authrow_message}
+			<input type="checkbox" class="ui-custom-input"  name="{$authrow_message[auth].AUTH_OPTION}" id="{$authrow_message[auth].AUTH_OPTION}" value="{$authrow_message[auth].AUTH_OPTION_ID}"{if $authrow_message[auth].AUTH_SETTING} checked="checked"{/if} />
+			<label for="{$authrow_message[auth].AUTH_OPTION}"><span class="{$authrow_message[auth].AUTH_ICO} ico">{$authrow_message[auth].AUTH_OPTION_CLEAN}</span></label>
+		{/section}
+		</div>
+		</td>
+		<td>
+		<div class="row">
+		<h3><span class="proposals ico">Proposals</span></h3>
+		{section name=auth loop=$authrow_proposal}
+			<input type="checkbox" class="ui-custom-input"  name="{$authrow_proposal[auth].AUTH_OPTION}" id="{$authrow_proposal[auth].AUTH_OPTION}" value="{$authrow_proposal[auth].AUTH_OPTION_ID}"{if $authrow_proposal[auth].AUTH_SETTING} checked="checked"{/if} />
+			<label for="{$authrow_proposal[auth].AUTH_OPTION}"><span class="{$authrow_proposal[auth].AUTH_ICO} ico">{$authrow_proposal[auth].AUTH_OPTION_CLEAN}</span></label>
+		{/section}
+		</div>
+		
+		<div class="row">
+		<h3><span class="users ico">Users</span></h3>
+		{section name=auth loop=$authrow_user}
+			<input type="checkbox" class="ui-custom-input"  name="{$authrow_user[auth].AUTH_OPTION}" id="{$authrow_user[auth].AUTH_OPTION}" value="{$authrow_user[auth].AUTH_OPTION_ID}"{if $authrow_user[auth].AUTH_SETTING} checked="checked"{/if} />
+			<label for="{$authrow_user[auth].AUTH_OPTION}"><span class="{$authrow_user[auth].AUTH_ICO} ico">{$authrow_user[auth].AUTH_OPTION_CLEAN}</span></label>
+		{/section}
+		</div>
+		
+		<div class="row">
+		<h3><span class="clients ico">Clients</span></h3>
+		{section name=auth loop=$authrow_client}
+			<input type="checkbox" class="ui-custom-input"  name="{$authrow_client[auth].AUTH_OPTION}" id="{$authrow_client[auth].AUTH_OPTION}" value="{$authrow_client[auth].AUTH_OPTION_ID}"{if $authrow_client[auth].AUTH_SETTING} checked="checked"{/if} />
+			<label for="{$authrow_client[auth].AUTH_OPTION}"><span class="{$authrow_client[auth].AUTH_ICO} ico">{$authrow_client[auth].AUTH_OPTION_CLEAN}</span></label>
+		{/section}
+		</div>
+		</td>
+	</tr>
+</table>
+</div>
+
+<div style="clear:both;"></div>

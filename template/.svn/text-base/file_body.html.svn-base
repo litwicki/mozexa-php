@@ -1,0 +1,37 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_message_body.html 34 2010-05-27 00:35:51Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+{include file="template/dashboard_menu.html"}
+
+<div id="dashboard">
+
+{if $FILE_ERROR eq ''}
+	{if $SHOW_DETAIL}
+		{if $SHOW_FORM}
+			{include file="template/file_form.html"}
+		{else}
+			{include file="template/file_details.html"}
+		{/if}
+	{else}
+		{if $SHOW_FORM}
+			{include file="template/file_form.html"}
+		{else}
+			{if $S_MESSAGE}{include file="template/myfiles.html"}{/if}
+		{/if}
+	{/if}
+{else}
+<h1>{$FORM_NAME}</h1>
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="soft-error ico">{$FILE_ERROR}</span>
+	</div>
+</div>
+{/if}
+	
+</div>
+
+{include file="template/overall_footer.html"}

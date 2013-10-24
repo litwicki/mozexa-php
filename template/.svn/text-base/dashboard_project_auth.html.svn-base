@@ -1,0 +1,177 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<h1>Permissions: {$PROJECT_NAME} / {$PROJECT_USER_REALNAME}</h1>
+
+{if $S_PROJECT_MANAGER or $S_ADMINISTRATOR}
+
+<div class="ui-widget row" style="display: none;" id="authsuccess">
+	<div class="ui-state-highlight ui-corner-all padding"> 
+		<span class="approve ico">&nbsp;</span><strong>Permissions saved successfully!</strong>
+	</div>
+</div>
+
+<script type="text/javascript" src="{$BASE_URL}/js/projects/project_auth.js"></script>
+
+	<p>Select the permissions you would like this user to have specifically for this project. For example, "Add Proposal" would give {$PROJECT_USER_REALNAME} permissions to add a proposal document to this project. These permissions are not required, and are only used to overwrite global permissions this use already has.</p>
+
+	<div class="ui-widget">
+		<div class="ui-state-highlight ui-corner-all padding row"> 
+			<span class="soft-error ico">&nbsp;</span><strong>These permissions will supersede any global permissions for this user!</strong>
+		</div>
+	</div>
+
+	<form method="post" action="projects.php" id="authform">
+		<fieldset>
+		
+		<input type="hidden" name="user_id" value="{$PROJECT_USER_ID}" />
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+
+		<div id="user-permissions">
+		
+		<table class="datagrid">
+			<tr>
+				<td>
+					<h3><span class="tasks ico">Tasks</span></h3>
+					<table class="datagrid">
+						<tr>
+							<th style="width: 30px; text-align: center;"><span class="approve ico" title="Allow this permission">&nbsp;</span></th>
+							<th style="width: 30px; text-align: center;"><span class="cancel ico" title="Disallow this permission">&nbsp;</span></th>
+							<th>Description</th>
+						</tr>
+						{section name=auth loop=$authrow_task}
+							<tr>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_task[auth].AUTH_OPTION}" id="{$authrow_task[auth].AUTH_OPTION}-yes" value="1"
+									{if $authrow_task[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_task[auth].AUTH_OPTION}-yes">&nbsp;</label>
+								</td>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_task[auth].AUTH_OPTION}" id="{$authrow_task[auth].AUTH_OPTION}-no" value="0"
+									{if $authrow_task[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_task[auth].AUTH_OPTION}-no">&nbsp;</label>
+								</td>
+								<td><span class="{$authrow_task[auth].AUTH_ICO} ico">{$authrow_task[auth].AUTH_OPTION_CLEAN}</span></td>
+							</tr>
+						{/section}
+					</table>
+				</td>
+				<td>
+					<h3><span class="messages ico">Messages</span></h3>
+					<table class="datagrid">
+						<tr>
+							<th style="width: 30px; text-align: center;"><span class="approve ico" title="Allow this permission">&nbsp;</span></th>
+							<th style="width: 30px; text-align: center;"><span class="cancel ico" title="Disallow this permission">&nbsp;</span></th>
+							<th>Description</th>
+						</tr>
+						{section name=auth loop=$authrow_message}
+							<tr>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_message[auth].AUTH_OPTION}" id="{$authrow_message[auth].AUTH_OPTION}-yes" value="1"
+									{if $authrow_message[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_message[auth].AUTH_OPTION}-yes">&nbsp;</label>
+								</td>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_message[auth].AUTH_OPTION}" id="{$authrow_message[auth].AUTH_OPTION}-no" value="0"
+									{if $authrow_message[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_message[auth].AUTH_OPTION}-no">&nbsp;</label>
+								</td>
+								<td><span class="{$authrow_message[auth].AUTH_ICO} ico">{$authrow_message[auth].AUTH_OPTION_CLEAN}</span></td>
+							</tr>
+						{/section}
+					</table>
+				</td>
+				<td>
+					<h3><span class="proposals ico">Proposals</span></h3>
+					<table class="datagrid">
+						<tr>
+							<th style="width: 30px; text-align: center;"><span class="approve ico" title="Allow this permission">&nbsp;</span></th>
+							<th style="width: 30px; text-align: center;"><span class="cancel ico" title="Disallow this permission">&nbsp;</span></th>
+							<th>Description</th>
+						</tr>
+						{section name=auth loop=$authrow_proposal}
+							<tr>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_proposal[auth].AUTH_OPTION}" id="{$authrow_proposal[auth].AUTH_OPTION}-yes" value="1"
+									{if $authrow_proposal[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_proposal[auth].AUTH_OPTION}-yes">&nbsp;</label>
+								</td>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_proposal[auth].AUTH_OPTION}" id="{$authrow_proposal[auth].AUTH_OPTION}-no" value="0"
+									{if $authrow_proposal[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_proposal[auth].AUTH_OPTION}-no">&nbsp;</label>
+								</td>
+								<td><span class="{$authrow_proposal[auth].AUTH_ICO} ico">{$authrow_proposal[auth].AUTH_OPTION_CLEAN}</span></td>
+							</tr>
+						{/section}
+					</table>
+				</td>
+				<td>
+					<h3><span class="files ico">Files</span></h3>
+					<table class="datagrid">
+						<tr>
+							<th style="width: 30px; text-align: center;"><span class="approve ico" title="Allow this permission">&nbsp;</span></th>
+							<th style="width: 30px; text-align: center;"><span class="cancel ico" title="Disallow this permission">&nbsp;</span></th>
+							<th>Description</th>
+						</tr>
+						{section name=auth loop=$authrow_file}
+							<tr>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_file[auth].AUTH_OPTION}" id="{$authrow_file[auth].AUTH_OPTION}-yes" value="1"
+									{if $authrow_file[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_file[auth].AUTH_OPTION}-yes">&nbsp;</label>
+								</td>
+								<td>
+									<input type="radio" class="ui-custom-input" name="{$authrow_file[auth].AUTH_OPTION}" id="{$authrow_file[auth].AUTH_OPTION}-no" value="0"
+									{if $authrow_file[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_file[auth].AUTH_OPTION}-no">&nbsp;</label>
+								</td>
+								<td><span class="{$authrow_file[auth].AUTH_ICO} ico">{$authrow_file[auth].AUTH_OPTION_CLEAN}</span></td>
+							</tr>
+						{/section}
+					</table>
+				</td>
+			</tr>
+		</table>
+			
+		</div>
+		
+		<hr />
+		
+		<div class="buttons row">
+			<button type="submit" name="saveauth">
+				<span class="save">Save Project Permissions</span>
+			</button>
+			
+			<a class="button prompt" href="javascript:;" rel="#clearpermissions"><span class="delete ico">Clear All</span></a>
+		</div>
+		
+		</fieldset>
+	</form>
+	
+	<div id="clearpermissions" class="dialog" title="Clear User Permissions">
+		<form method="post" action="projects.php">
+		  <fieldset>
+			<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+			<input type="hidden" name="user_id" value="{$PROJECT_USER_ID}" />
+			
+			<p>Are you sure to want to clear <em>all</em> permissions for {$PROJECT_USER_REALNAME}? This will restore all global permissions for {$PROJECT_USER_REALNAME} on this project.</p>
+			
+			<button type="submit" name="clearauth">
+				<span class="approve">Yes, Clear Permissions</span>
+			</button>
+			
+		  </fieldset>
+		</form>
+	</div>
+
+{else}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="alert ico">&nbsp;</span>You must be a project manager to edit permissions for this project.
+	</div>
+</div>
+{/if}

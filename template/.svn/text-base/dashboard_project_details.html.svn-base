@@ -1,0 +1,166 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+<h1>{$PROJECT_NAME}</h1>
+
+{if $S_USER_ACCESS or $S_ADMINISTRATOR}
+
+	<script type="text/javascript" src="{$BASE_URL}/js/projects/project_details.js"></script>
+
+	{if $CONTRACT_REQUIRED and not $SHOW_PROJECT_PROPOSAL}
+	<div class="ui-widget row">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="alert ico">&nbsp;</span><strong>This project has no proposal! As a result, no messages, tasks, or files can be created for this project until a proposal is approved!</strong> 
+			{if $S_STAFF and $U_ADD_PROPOSAL}<p><a href="proposals.php?mode=add&amp;project_id={$PROJECT_ID}"><span class="proposal-add ico">Write a proposal</span></a> for this project.</p>{/if}
+		</div>
+	</div>
+	{/if}
+	
+	<div id="project-overview">
+		{include file="template/dashboard_project_details_small.html"}
+		{$PROJECT_DESCRIPTION}
+
+		<div style="clear:both;" class="row"></div>
+
+		<div id="project-details">
+
+			<ul>
+				<li><a class="noborder" href="#project-{$PROJECT_ID}-tasks"><span class="task ico">Project Tasks ({$TASK_COUNT})</span></a></li>
+				<li><a class="noborder" href="#project-{$PROJECT_ID}-messages"><span class="message ico">Project Messages ({$MESSAGE_COUNT})</span></a></li>
+				<li><a class="noborder" href="#project-{$PROJECT_ID}-proposal"><span class="proposal ico">Proposal</span></a></li>
+			</ul>
+
+			<div id="project-{$PROJECT_ID}-tasks">	
+			{include file="template/dashboard_mytasks.html"}
+			</div>
+			
+			<div id="project-{$PROJECT_ID}-messages">	
+			{include file="template/dashboard_mymessages.html"}
+			</div>
+			
+			<div id="project-{$PROJECT_ID}-proposal">	
+			
+				<h3>Project Proposal</h3>
+				<p class="small">Client approved proposal for {$PROJECT_NAME}.</p>
+				{if not $CONTRACT_REQUIRED}
+				<div class="ui-widget row">
+					<div class="ui-state-highlight ui-corner-all padding"> 
+						<span class="alert ico">&nbsp;</span><strong>This project does not have or require a contract/proposal.</strong>
+					</div>
+				</div>
+				{else}
+					
+					{if not $SHOW_PROJECT_PROPOSAL}
+					<div class="ui-widget row">
+						<div class="ui-state-error ui-corner-all padding"> 
+							<span class="alert ico">&nbsp;</span><strong>This project has no proposal - no messages, tasks, or files can be created for this project until a proposal is approved!</strong> 
+							{if $S_STAFF and $U_ADD_PROPOSAL}<p><a href="proposals.php?mode=add&amp;project_id={$PROJECT_ID}"><span class="proposal-add ico">Write a proposal</span></a> for this project.</p>{/if}
+						</div>
+					</div>
+					{/if}
+					
+					{$PROPOSAL_DESCRIPTION}
+					{if $SHOW_ATTACHMENTS}
+						<hr />
+						<p><strong>Proposal Files</strong></p>
+						{include file="template/dashboard_attachments.html"}
+					{/if}
+				{/if}
+
+			</div>
+			
+		</div>
+
+		<h2>Actions</h2>
+
+		<div class="buttons row">
+			
+			<form method="post" action="projects.php" id="projectform">
+				<fieldset>
+				<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+
+				{if $S_ADMINISTRATOR or ($S_STAFF and $U_COMPLETE_PROJECT) or $S_USER_ACCESS}
+				<span class="button prompt" rel="#complete">
+				  <span class="approve">Complete Project</span>
+				</span>
+				{/if}
+
+				{if $S_ADMINISTRATOR or ($S_STAFF and $U_DELETE_PROJECT)}
+				<span class="button prompt" rel="#deleteproject">
+					<span class="delete">Delete Project</span>
+				</span>
+
+				<div id="deleteproject" class="dialog ui-helper-reset" title="Confirm Project Removal">
+					<p>Are you sure you want to delete this project and all of the associated tasks &amp; messages?</p>
+					
+					<div class="buttons">
+						<button type="submit" name="delete">
+							<span class="approve">Confirm Delete</span>
+						</button>
+						
+						<a class="button" onclick="$('#deleteproject').dialog('close');" href="javascript:;">
+							<span class="close ico">Cancel</span>
+						</a>
+					</div>
+					
+				</div>
+				{/if}
+				
+				</fieldset>
+				
+			</form>
+			
+		</div>
+		{***************************************************************
+			We put this after the first </form> block to avoid nested 
+			forms and the inevitable headache that causes.
+		****************************************************************}
+		{if $S_ADMINISTRATOR or ($S_STAFF and $U_COMPLETE_PROJECT) or $S_USER_ACCESS}
+		<div id="complete" class="dialog" title="Approve Project Completion">
+		   <form method="post" id="completeform" action="{$BASE_URL}/projects.php">
+		   <fieldset>
+		   <input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+			{if $SHOW_PROJECT_PROPOSAL}
+			<div class="row">We sincerely hope to have exceeded your expectations along the way!</div>
+			
+			<div class="terms">{$PROJECT_COMPLETION_TERMS}</div>
+			
+			<div class="row">
+				<label for="feedback">Do you have any feedback?</label>
+				<textarea name="feedback" id="feedback" class="wysiwyg_simple" style="width: 100%;" rows="1" cols="1"></textarea>
+			</div>
+			
+			<div class="row">
+				<input type="checkbox" name="terms" value="1" />&nbsp;I have read and accept the terms of completion.
+			</div>
+				
+			<div id="errors"></div>
+			
+			<button type="submit" name="complete">
+				<span class="approve">Approve &amp; Finalize</span>
+			</button>
+			{else}
+				<p>We're very sorry, but without an approved project proposal we cannot complete this project.</p>
+			{/if}
+			
+			<a class="button" onclick="$('#complete').dialog('close');"><span class="close ico">Cancel</span></a>
+			
+			<a class="button" href="mailto:{$STAFF_EMAIL}?subject=Project Help">
+				<span class="help ico">Help!</span>
+			</a>
+			</fieldset>
+		   </form>
+		</div>
+		{/if}
+
+	</div>
+
+{else}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="alert ico">&nbsp;</span>You are not authorized to access this project! 
+	</div>
+</div>
+{/if}

@@ -1,0 +1,155 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript" src="{$BASE_URL}/js/messages/message_form.js"></script>
+{if ($SHOW_ATTACHMENTS and ($S_STAFF and $SHOW_FORM and ($S_AUTHORIZED_USER))) or ($DISABLED_ATTACHMENTS and ($S_STAFF and $SHOW_FORM and ($S_AUTHORIZED_USER)))}
+<script type="text/javascript">
+$().ready(function() {
+	{if $SHOW_ATTACHMENTS and ($S_STAFF and $SHOW_FORM and ($S_AUTHORIZED_USER))}
+	{section name=attach loop=$attachrow}
+	$('#removeattach{$attachrow[attach].ATTACHMENT_ID}').ajaxForm(function() { 
+		$('tr#attachment{$attachrow[attach].ATTACHMENT_ID}').fadeOut("slow");
+	}); 
+	{/section}
+	{/if}
+	
+	{if $DISABLED_ATTACHMENTS and ($S_STAFF and $SHOW_FORM and ($S_AUTHORIZED_USER))}
+	{section name=attach loop=$disabledattachrow}
+	$('#addattach{$disabledattachrow[attach].ATTACHMENT_ID}').ajaxForm(function() { 
+		$('tr#disabledattachment{$disabledattachrow[attach].ATTACHMENT_ID}').fadeOut("slow");
+	}); 
+	{/section}
+	{/if}
+});
+</script>
+{/if}
+
+<h1>{$FORM_NAME}</h1>
+
+{if $S_ADMINISTRATOR or ($S_STAFF and $SHOW_FORM and ($S_AUTHORIZED_USER))}
+
+{if $SHOW_DETAIL and $SHOW_FORM}
+<div class="ui-widget row">
+	<div class="ui-state-active ui-corner-all ui-helper-reset">
+		<div class="pad">
+			<ul class="pretty horizontal">
+				<li class="user">Posted {$DATE_ADDED} by {$AUTHOR}</li>
+				<li class="comment">{$REPLY_COUNT_MESSAGE}</li>
+				<li class="file">{$ATTACHMENT_COUNT} attachment(s).</li>
+			</ul>
+		</div>
+	</div>
+</div>
+{/if}
+
+<div class="ui-widget row" id="success" style="display: none;">
+	<div class="ui-state-highlight ui-corner-all pad"> 
+		<span class="approve ico">&nbsp;</span><span id="success_message"></span>
+	</div>
+</div>
+
+<form method="post" id="messageform" action="{$BASE_URL}/{if $S_MESSAGE}messages.php{elseif $S_PROPOSAL}proposals.php{else}requests.php{/if}" enctype="multipart/form-data">
+	<fieldset>
+	{if $SHOW_MESSAGE_FORM}
+	
+		<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />
+		{if $S_PROPOSAL}<input type="hidden" name="proposal_id" value="{$PROPOSAL_ID}" />{/if}
+		{if $S_REQUEST}<input type="hidden" name="request_id" value="{$REQUEST_ID}" />{/if}
+		<input type="hidden" name="user_id" id="user_id" />
+		
+
+		<div class="row">
+			<div class="left">
+				<div class="row">
+					<label for="subject">Title</label>
+						<input class="ui-input" type="text" name="subject" id="subject" validate="required:true,minlength:5"  
+					title="{if $S_PROPOSAL}Proposal Title{elseif $S_MESSAGE}Message Subject{/if} is required!" value="{$SUBJECT}" />
+				</div>
+				
+				{if $S_MESSAGE}
+				<div class="row">
+					<label>Message Type</label>
+					<input class="ui-custom-input" type="radio" name="message_type" id="message_type_1" value="project"{if $PROJECT_ID gt 0} checked="checked"{/if} /><label for="message_type_1">Send to all users of a project</label>
+					<input class="ui-custom-input" type="radio" name="message_type" id="message_type_2" value="user" /><label for="message_type_2">Send to one specific user</label>
+				</div>
+				{/if}
+				
+				{if not $SHOW_DETAIL}
+					<div class="row" id="projectlist"{if $S_MESSAGE and not $PROJECT_ID} style="display: none;"{/if}>
+						<label>{$COMPANY_NAME} Projects</label>
+						{include file="dashboard_ddl_projects.html"}
+					</div>
+				
+					{if $S_MESSAGE}
+					<div class="row" id="messageuser" style="display: none;">
+						<label for="message_user_id">Enter User's Name</label>
+						<input id="message_user_id" name="message_user_id" class="ui-input" style="width: 400px;" />
+					</div>
+					{/if}
+				{else}
+					<div class="row">
+					{if $PROJECT_ID gt 0}
+					<label>Project</label>
+					{$PROJECT_NAME}
+					{else}
+					<label>Recipient</label>
+					{$MESSAGE_USER_REALNAME}
+					{/if}
+					</div>
+				{/if}
+				
+				<div class="row">
+					<label for="attachments">Add Attachment(s)</label>
+					<input type="file" class="multi" name="attachments[]" accept="gif|jpg|png|jpeg|doc|docx|xls|xlsx|txt|sql|odt|ods|odg|odp|odf|zip|psd|rar|pdf" />
+				</div>
+			</div>
+			
+			<div class="right">
+				<div id="errors"></div>
+			</div>
+			
+		</div>
+		
+		<div class="row">
+		  <label for="message">Description</label>
+		  <textarea name="message" id="message" rows="1" cols="1" class="wysiwyg" style="width: 100% !important;">{$MESSAGE}</textarea>
+		</div>
+
+		<div class="buttons">
+			<button type="submit" name="savemessage" id="save">
+			{if $S_PROPOSAL}<span class="proposal-go ico">Save Proposal</span>
+			{elseif $S_MESSAGE}<span class="message-go ico">Send Message</span>
+			{else}<span class="save ico">Save</span>
+			{/if}
+			</button>
+
+			<button type="button" onclick="javascript:history.go(-1);">
+				<span class="cancel">Cancel</span>
+			</button>
+		</div>
+		
+	{else}
+		<div class="ui-widget row" id="success">
+			<div class="ui-state-error ui-corner-all pad"> 
+				<p style="font-weight:bold;">{if $S_PROPOSAL}No Pending Requests!{elseif $S_MESSAGE}No Active Projects!{/if}</p>
+				<p>{if $S_PROPOSAL}
+				There are no client requests without a proposal! Did you want to <a href="{$BASE_URL}/messages.php?mode=add">write a message</a> to a client?
+				{elseif $S_MESSAGE}
+				There are no active projects, so we have nothing to link a message to.
+				{/if}</p>
+			</div>
+		</div>
+	{/if}
+
+	</fieldset>
+</form>
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error">&nbsp;</span>You do not have permission to access this page.
+	</div>
+</div>
+{/if}

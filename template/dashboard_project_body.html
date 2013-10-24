@@ -1,0 +1,48 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_project_body.html 37 2010-05-29 15:52:13Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+{include file="template/dashboard_menu.html"}
+
+<div id="dashboard">
+
+{if $PROJECT_ERROR eq ''}
+
+	{if $SHOW_AUTH_FORM}
+		{include file="template/dashboard_project_auth.html"}
+	{else}
+		{if $SHOW_DETAIL}
+			{if $SHOW_FORM}
+				{include file="template/dashboard_project_form.html"}
+			{else}
+				{include file="template/dashboard_project_details.html"}
+			{/if}
+		{else}
+			{if $SHOW_FORM}
+				{include file="template/dashboard_project_form.html"}
+			{else}
+				{include file="template/dashboard_myprojects.html"}
+			{/if}
+		{/if}
+	{/if}
+	
+	{if $S_ADMINISTRATOR or ($S_STAFF and $PROJECT_ID gt 0 and not $SHOW_FORM and $S_USER_ACCESS)}
+	<div id="project-users" class="dialog" title="Project Users">
+		{include file="template/assigned_users.html"}
+	</div>
+	{/if}
+	
+{else}
+	<div class="ui-widget row">
+		<div class="ui-state-error ui-corner-all pad"> 
+			<span class="alert ico">{$PROJECT_ERROR}</span>
+		</div>
+	</div>
+{/if}
+
+</div>
+
+{include file="template/overall_footer.html"}

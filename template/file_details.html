@@ -1,0 +1,256 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_message_details.html 43 2010-06-06 03:32:59Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript" src="{$BASE_URL}/js/messages/message_details.js"></script>
+<script type="text/javascript">
+$().ready(function() {
+	{if $SHOW_REPLIES}
+	{section name=reply loop=$replyrow}
+	$('#killreply{$replyrow[reply].REPLY_ID}').ajaxForm({ 
+		dataType: 'json',
+		success: deletereply
+	}); 
+	{/section}
+	{/if}
+});
+
+function deletereply(data){
+	var reply_id = data.reply_id
+	$('#reply'+reply_id).fadeOut("slow");
+	{* update the replies total *}
+	$("#reply_count_message").text(data.reply_count_message);
+	return true;
+}
+</script>
+
+{if $S_REQUEST and $PENDING_PROPOSAL}
+<div class="alert"><a href="{$BASE_URL}/proposals.php?id={$PROPOSAL_ID}">A proposal is pending approval for this request!</a></div>
+{/if}
+
+<div id="{if $S_PROPOSAL}proposal-{$PROPOSAL_ID}{elseif $S_REQUEST}request-{$REQUEST_ID}{elseif $S_MESSAGE}message-{$MESSAGE_ID}{/if}">
+	
+	{include file="template/user_avatar.html"}
+	
+	<h1>{$SUBJECT}</h1>
+	<p>Posted {$DATE_ADDED} by <a href="{$BASE_URL}/users.php?id={$AUTHOR_USER_ID}">{$AUTHOR}</a>{if $PROJECT_ID gt 0} for project <a href="{$BASE_URL}/projects.php?id={$PROJECT_ID}">{$PROJECT_NAME}</a>{/if}.</p>
+	
+	<div style="clear:both:">&nbsp;</div>
+	
+	<div class="message-detail">
+		<h3>{if $S_PROPOSAL}Proposal{elseif $S_REQUEST}Request Details{elseif $S_MESSAGE}Message{/if}</h3>
+		{$MESSAGE}	
+	</div>
+
+	<div class="row">
+		<h3>Files</h3>
+		{if $SHOW_ATTACHMENTS}
+			{include file="template/dashboard_attachments.html"}
+		{else}
+		<p>There are no attachments for this {if $S_PROPOSAL}proposal{elseif $S_REQUEST}request{elseif $S_MESSAGE}message{/if}.</p>
+		{/if}
+	</div>
+	
+</div>
+
+{if not $S_REQUEST and not $PROPOSAL_APPROVED}
+<div class="ui-widget row">
+	<div class="ui-state-highlight ui-corner-all pad"> 
+		<div style="clear:both;display:block;">
+		  <span id="reply_count_message">{$REPLY_COUNT_MESSAGE}</span>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+</div>
+{/if}
+
+<div id="commentsbox">
+
+	{section name=reply loop=$replyrow}
+	<div class="ui-widget ui-widget-content ui-corner-all row" id="reply{$replyrow[reply].REPLY_ID}">
+		<form method="post" action="reply.php" id="killreply{$replyrow[reply].REPLY_ID}" enctype="multipart/form-data">
+			<fieldset>
+			  <div class="ui-widget ui-widget-content ui-corner-all ui-static pad-light">
+			   <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix pad">
+					{if $U_EDIT_MESSAGE or $S_ADMINISTRATOR}<span style="float: right;">
+					  <input type="submit" class="delete ico" name="delete" value="" />
+					</span>{/if}{$replyrow[reply].SUBJECT}
+				  <span id="ui-dialog-title-dialog" class="ui-dialog-title big">{$replyrow[reply].COMPANY}</span>
+			   </div>
+			   <div class="pad">
+					<input type="hidden" name="parent_id" value="{$MESSAGE_ID}" />
+					<input type="hidden" name="message_id" value="{$replyrow[reply].MESSAGE_ID}" />
+					<input type="hidden" name="reply_id" value="{$replyrow[reply].REPLY_ID}" />
+					<p style="clear: both;">{$replyrow[reply].MESSAGE}<span class="byline">Posted {$replyrow[reply].DATE_ADDED} by {$replyrow[reply].USER_REALNAME}</span></p>
+			   </div>
+			  </div>
+			</fieldset>
+		</form>
+	</div>
+	{/section}
+	
+	<div class="ui-widget row" id="replybox" style="display:none;">
+		<div class="ui-state-active ui-corner-all pad"> 
+			<form method="post" id="replyform" action="{$BASE_URL}/reply.php">
+				<fieldset>
+
+					<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />
+					<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+					<input type="hidden" name="parent_id" value="{$MESSAGE_ID}" />
+
+					<div class="row">
+						<label for="subject">Subject</label>
+						<input class="ui-input" style="width: 90%;" type="text" name="subject" value="RE: {$SUBJECT}" id="subject" validate="required:true" title="Subject is required." />
+					</div>
+					
+					<div class="row">
+						<label for="replytext">Reply to this Message</label>
+						<textarea name="replytext" id="replytext" class="wysiwyg" style="width: 100%;" rows="1" cols="1"></textarea>
+					</div>
+
+					<div class="buttons row">
+						<button type="submit" name="submit" id="submitbutton">
+							<span class="approve">Submit</span>
+						</button>
+						<button type="button" class="replybox">
+							<span class="delete">Close</span>
+						</button>
+					</div>
+
+				</fieldset>
+			</form>
+		</div>	
+	</div>
+	
+</div>
+	
+{if not $PROPOSAL_APPROVED}
+<h2>Actions</h2>
+<div class="row buttons">
+
+	<a href="javascript:;" class="replybox button"><span class="add ico">{if $S_MESSAGE}Submit Reply{else}Leave Feedback{/if}</span></a>
+	
+	{if $S_PROPOSAL and (($S_STAFF and $U_EDIT_PROPOSAL) or $S_ADMINISTRATOR)}
+	<a class="button prompt" href="{$BASE_URL}/proposals.php?mode=edit&amp;id={$PROPOSAL_ID}">
+		<span class="proposal-edit ico">Edit</span>
+	</a>
+	{/if}
+
+	{if $S_PROPOSAL and ($S_CLIENT or $S_ADMINISTRATOR)}
+	<button type="button prompt" rel="#yesproposal">
+		<span class="approve">Approve Proposal</span>
+	</button>
+	
+	<button type="button prompt" rel="#noproposal">
+		<span class="thumbdown">Decline Proposal</span>
+	</button>
+	{/if}
+
+	{if $S_MESSAGE and $S_MESSAGE_AUTHOR}
+	<a class="button" href="{$BASE_URL}/messages.php?mode=edit&amp;id={$MESSAGE_ID}">
+		<span class="message-edit ico">Edit</span>
+	</a>
+	{/if}
+
+	{if $S_REQUEST and (($S_STAFF and $U_ADD_PROPOSAL) or $S_ADMINISTRATOR)}
+	<a class="button" href="{$BASE_URL}/proposals.php?mode=add&amp;rid={$REQUEST_ID}">
+		<span class="proposal-edit ico">Write Proposal</span>
+	</a>
+	{/if}
+	
+	{if $S_MESSAGE}
+		{if $S_MARKED_READ}
+		<a class="button prompt" href="javascript:;" rel="#tag-message">
+			<span class="message-unread ico">Mark Unread</span>
+		</a>
+		{else}
+		<a class="button prompt" href="javascript:;" rel="#tag-message">
+			<span class="message-read ico">Mark Read</span>
+		</a>
+		{/if}
+	{/if}
+	
+	{if $S_ADMINISTRATOR or ($S_STAFF and $U_DELETE_MESSAGE)}
+	<a class="button prompt" href="javascript:;" rel="#deletemessage">
+		<span class="delete ico">Delete</span>
+	</a>
+	{/if}
+
+</div>
+
+{if $S_ADMINISTRATOR or $S_STAFF}
+<div id="deletemessage" class="dialog" title="Delete this {if $S_PROPOSAL}proposal{elseif $S_REQUEST}request{else}message{/if}?">
+	<form method="post" action="{if $S_MESSAGE}messages.php{elseif $S_PROPOSAL}proposals.php{else}requests.php{/if}">
+	<fieldset>
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+		{if $S_PROPOSAL}<input type="hidden" name="proposal_id" value="{$PROPOSAL_ID}" />{/if}
+		{if $S_REQUEST}<input type="hidden" name="request_id" value="{$REQUEST_ID}" />{/if}
+		{if $S_MESSAGE}<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />{/if}
+		<p>Are you sure you want to <em>permanently</em> remove this {if $S_PROPOSAL}proposal{elseif $S_REQUEST}request{else}message{/if}?</p>
+		<button type="submit" name="delete">
+			<span class="approve">Confirm Delete</span>
+		</button>
+		<a class="button" onclick="$('#deletemessage').dialog('close');"><span class="close ico">Cancel</span></a>
+	</fieldset>
+	</form>
+</div>
+{/if}
+
+<div id="tag-message" class="dialog" title="Mark this {if $S_MARKED_READ}unread{else}read{/if}?">
+	<form method="post" action="{if $S_MESSAGE}messages.php{elseif $S_PROPOSAL}proposals.php{else}requests.php{/if}">
+	<fieldset>
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+		{if $S_PROPOSAL}<input type="hidden" name="proposal_id" value="{$PROPOSAL_ID}" />{/if}
+		{if $S_REQUEST}<input type="hidden" name="request_id" value="{$REQUEST_ID}" />{/if}
+		{if $S_MESSAGE}<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />{/if}
+		<p>Are you sure you want to mark this message <strong>{if $S_MARKED_READ}unread{else}read{/if}</strong>? This will only toggle the display of this message on your message lists.</p>
+		<button type="submit" name="{if $S_MARKED_READ}unmark{else}read{/if}">
+			<span class="approve">Confirm</span>
+		</button>
+		<a class="button" onclick="$('#markread').dialog('close');"><span class="close ico">Cancel</span></a>
+	</fieldset>
+	</form>
+</div>
+
+{if $S_PROPOSAL and ($S_CLIENT or $S_ADMINISTRATOR)}
+<div id="yesproposal" class="dialog" style="width: 550px;" title="Approve Proposal">
+	<form method="post" action="{if $S_MESSAGE}messages.php{elseif $S_PROPOSAL}proposals.php{else}requests.php{/if}">
+	<fieldset>
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+		{if $S_PROPOSAL}<input type="hidden" name="proposal_id" value="{$PROPOSAL_ID}" />{/if}
+		{if $S_REQUEST}<input type="hidden" name="request_id" value="{$REQUEST_ID}" />{/if}
+		{if $S_MESSAGE}<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />{/if}
+		<p>Please read the terms below before confirming.</p>
+		<div class="terms">{include file="template/dashboard_confirm_proposal.html"}</div>
+		<button type="submit" name="approve">
+			<span class="approve">Confirm</span>
+		</button>
+		<a class="button" onclick="$('#yesproposal').dialog('close');"><span class="close ico">Cancel</span></a>
+	</fieldset>
+	</form>
+</div>
+
+<div id="noproposal" class="dialog" style="width: 550px;" title="Decline Proposal">
+	<form method="post" action="{if $S_MESSAGE}messages.php{elseif $S_PROPOSAL}proposals.php{else}requests.php{/if}">
+	<fieldset>
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+		{if $S_PROPOSAL}<input type="hidden" name="proposal_id" value="{$PROPOSAL_ID}" />{/if}
+		{if $S_REQUEST}<input type="hidden" name="request_id" value="{$REQUEST_ID}" />{/if}
+		{if $S_MESSAGE}<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />{/if}
+		<p>We would like to make sure we service the needs of your organization. Please give us any feedback you may have regarding why you are not happy with this proposal.</p>
+		<p>
+			<label for="feedback">Feedback</label>
+			<textarea name="feedback" id="feedback" rows="1" cols="1" class="wysiwyg_simple" style="width: 100%;"></textarea>
+		</p>
+		<button type="submit" name="decline">
+			<span class="approve">Confirm</span>
+		</button>
+		<a class="button" onclick="$('#noproposal').dialog('close');"><span class="close ico">Cancel</span></a>
+	</fieldset>
+	</form>
+</div>
+{/if}
+
+{/if}

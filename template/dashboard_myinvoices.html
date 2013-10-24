@@ -1,0 +1,67 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_myinvoices.html 45 2010-06-06 22:21:29Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div id="invoices">
+
+	<h3>{if $S_STAFF and $U_ADD_INVOICE}<span style="float: right;"><a href="{$BASE_URL}/invoices.php?mode=add"><span class="invoice-add ico">New Invoice</span></a></span>{/if}Invoices ({$INVOICE_COUNT})</h3>
+
+	<p class="small">{if $S_STAFF}All published invoices.{else}All invoices associated with my project(s).{/if}</p>
+
+	{if $INVOICE_COUNT gt 0}
+	<div class="datalist">
+		<div class="ui-widget ui-widget-content ui-corner-all">
+			<div class="ui-widget-content">
+			<table class="datagrid sortable">
+			<thead>
+				<tr class="ui-widget-header">
+					<th style="width: 100px;">Invoice #</th>
+					{if not $S_CLIENT}<th style="width: auto;">Client/Company</th>{/if}
+					<th style="width: 100px;">Invoice Date</th>
+					<th style="width: 100px;">Date Due</th>
+					<th style="width: 150px;">Payment Date</th>
+					<th style="width: 100px;">Invoice Amount</th>
+					<th style="width: 60px;">Status</th>
+				</tr>
+			</thead>
+			<tbody>
+			{section name=invoice loop=$invoicerow}
+			<tr class="ui-widget-content" id="invoice-{$invoicerow[invoice].INVOICE_ID}">
+				<td>
+					<a class="noborder" href="{$BASE_URL}/{if $S_STAFF}invoices.php?id={$invoicerow[invoice].INVOICE_ID}{else}print/invoice-{$invoicerow[invoice].INVOICE_ID}{/if}">
+					  <span class="money-go ico">Invoice #{$invoicerow[invoice].INVOICE_ID}</span>
+					</a>
+				</td>
+				{if not $S_CLIENT}<td>{$invoicerow[invoice].COMPANY}</td>{/if}
+				<td>{$invoicerow[invoice].INVOICE_DATE}</td>
+				<td>{$invoicerow[invoice].INVOICE_DATE_DUE}</td>
+				<td>{if $invoicerow[invoice].PAID eq 0}<span class="hourglass ico">Payment Pending</span>{else}{$invoicerow[invoice].STATUS_DATE}{/if}</td>
+				<td>{$invoicerow[invoice].TOTAL}</td>
+				<td>
+					{if $invoicerow[invoice].STATUS eq 0}<span class="alert ico">Error!</span>
+					{elseif $invoicerow[invoice].STATUS eq 1}<span class="money ico"><strong>Published</strong></span>
+					{elseif $invoicerow[invoice].STATUS eq 2}<span class="approve ico">Paid</span>
+					{elseif $invoicerow[invoice].STATUS eq 3}<span class="feedback ico">Incomplete</span>
+					{/if}
+				</td>
+			</tr>
+			{/section}
+			</tbody>
+			</table>
+			</div>
+		</div>
+	</div>
+	
+	{include file="template/pagination.html"}
+	
+	{else}
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="error ico">{$NO_INVOICES}</span>
+		</div>
+	</div>
+	{/if}
+	
+</div>

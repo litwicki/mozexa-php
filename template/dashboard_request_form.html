@@ -1,0 +1,96 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_request_form.html 7 2010-04-23 16:35:57Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+<script type="text/javascript" src="{$BASE_URL}/js/requests/request_form.js"></script>
+
+<div id="page">
+
+	<h1>Request For Proposal</h1>
+	<p>Please provide your basic contact information and details about what your needs are so we can cater a proposal specifically for you.</p>
+
+	<form method="post" id="request_form" class="form" action="requests.php" >
+
+		<div id="formbox" class="form">
+
+			<div id="formdata">
+			
+				<div class="row">
+					
+					<div style="float: left; width: 50%;">
+						<label for="name">My Name</label>
+						<label for="name" class="error" title="Please enter your name."></label>
+						<span class="text"><input type="text" name="name" id="name" value="{$CLIENT_NAME}" validate="required:true" /></span>
+					</div>
+					
+					<div style="float: left; width: 50%;">
+						<label for="email">My Email</label>
+						<label for="email" class="error" title="Please enter a valid email address.">&nbsp;</label>
+						<span class="text"><input type="text" name="email" id="email" value="{$CLIENT_EMAIL}" validate="required:true,email:true" /></span>
+					</div>
+					
+				</div>
+				
+				<div style="clear: both; height: 10px;"></div>
+				
+				<div class="row">
+					<label for="client_phone">Preferred Phone</label>
+					<label for="client_phone" class="error" title="Please enter a valid phone number.">&nbsp;</label>
+					<span class="text"><input type="text" name="client_phone" id="client_phone" value="{$CLIENT_PHONE}" validate="phone:true" /></span>
+				</div>
+				
+				<div class="row">
+
+				{if $RETURN_USER}
+					<label for="clientlist">My website is for</label>
+					<span class="small">Please select the organization this request pertains to.</span>
+					<p><label for="clientlist" class="error" title="Please select one or enter a new company below."></label>
+					<select name="clientlist" id="clientlist" validate="required:true,min:1">
+					<option value="0">Select From Below</option>
+					{section name=client loop=$clientlist}
+					<option value="{$clientlist[client].CLIENT_ID}">{$clientlist[client].COMPANY_NAME}</option>
+					{/section}
+					<option value="999">Other</option>
+					</select></p>
+
+				{/if}
+				
+					<span class="text" id="new_company" style="background: none !important;{if $RETURN_USER}display: none;{/if}">
+					  <label for="company">{if $RETURN_USER}<span class="close ico new_company">&nbsp;</span>{/if}Company or Organization</label>
+					  <label for="company" class="error" title="Please enter your company or organization">&nbsp;</label>
+					  <input type="text" name="company" id="company" style="width: 300px;" />
+					</span>
+				</div>
+				<div style="clear: both;"></div>
+
+				<div class="row">
+					<label for="other_info">What other information can you give us about your project?</label>
+					<textarea name="other_info" id="other_info" rows="1" cols="1" style="height: 300px;" class="wysiwyg"></textarea>
+				</div>
+				
+				<div class="row"{if $REFERRAL eq ''}{else} style="display: none;"{/if}>
+					<label for="referral">How did you hear about us?</label>
+					<span class="text"><input type="text" name="referral" id="referral" value="{$REFERRAL}" /></span>
+				</div>
+
+				<button type="submit" name="submit" id="submit">
+					<span class="approve">Submit Request for Proposal</span>
+				</button>
+				
+			</div>
+			
+			<div id="request-success" style="display: none;">
+				<h2>Thank you for your submission!</h2>
+				<p>Please check your email for confirmation and details on how to manage your project. If you have any questions please do not hesitate to <a href="{$BASE_URL}/contact/">contact us</a>.</p>
+			</div>
+
+		</div>
+
+	</form>
+
+</div>
+
+{include file="template/overall_footer.html"}

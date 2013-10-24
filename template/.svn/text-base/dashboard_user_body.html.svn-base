@@ -1,0 +1,35 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+{include file="template/dashboard_menu.html"}
+
+<div id="dashboard" class="ui-reset ui-clearfix ui-component">
+
+{if $USER_EROR eq ''}
+	{if $SHOW_DETAIL}
+		{if $SHOW_FORM}
+			{include file="template/dashboard_user_form.html"}
+		{else}
+			{include file="template/dashboard_user_form.html"}
+		{/if}
+	{else}
+		{if $SHOW_FORM}
+			{include file="template/dashboard_user_form.html"}
+		{else}
+			{include file="template/dashboard_myusers.html"}
+		{/if}
+	{/if}
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="soft-error ico">{$USER_ERROR}</span>
+	</div>
+</div>
+{/if}
+
+</div>
+{include file="template/overall_footer.html"}

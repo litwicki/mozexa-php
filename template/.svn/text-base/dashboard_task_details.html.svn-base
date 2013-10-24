@@ -1,0 +1,320 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{if $S_USER_ACCESS or $S_ADMINISTRATOR or $S_MANAGER}
+<script type="text/javascript" src="{$BASE_URL}/js/tasks/task_details.js"></script>
+<script type="text/javascript">
+$().ready(function(){
+
+	{section name=log loop=$timelogrow}
+	$("#timelogdetails-{$timelogrow[log].TASK_LOG_ID}").ajaxForm({
+		dataType: 'json',
+		success: deletetime
+	});	
+	
+	{/section}
+
+});
+</script>
+
+<div id="task-{$TASK_ID}" class="form">
+
+<h1>{$TASK_NAME}</h1>
+
+{if not $ASSIGNED_USER}
+<div class="ui-widget">
+	<div class="ui-state-highlight ui-corner-all padding"> 
+		<span class="soft-error ico">&nbsp;</span>You are not assigned to this task!
+	</div>
+</div>
+{/if}
+
+{if $S_STAFF_COMPLETE}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="soft-error ico">&nbsp;</span>To continue development on your project, we need <a href="#myfeedback">your approval/feedback</a> on this task.
+	</div>
+</div>
+{/if}
+
+{if $S_CLIENT_COMPLETE}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="alert ico">&nbsp;</span>This task was marked complete: <strong>{$USER_APPROVED_NAME} / {$STATUS_DATE}</strong>.
+	</div>
+</div>
+{/if}
+
+<h2>Task Details</h2>
+<div class="task-detail">{$TASK_DESCRIPTION}</div>
+
+<h2>Task Notes</h2>
+
+<div class="ui-widget row">
+	<div class="ui-state-highlight ui-corner-all pad"> 
+		<div style="clear:both;display:block;">
+		  <span id="reply_count_message">{$REPLY_COUNT_MESSAGE}</span>
+		</div>
+		<div style="clear:both;"></div>
+	</div>
+</div>
+
+{* REPLY/NOTE FORM HERE *}
+
+<h2>Work Log</h2>
+
+{if $S_CLIENT_COMPLETE}
+<div class="datagrid-wrapper noticeme">
+	<p><span class="exclamation ico">&nbsp;</span>This task was completed and approved: <strong>{$USER_APPROVED_NAME} / {$STATUS_DATE}</strong>.</p>
+</div>
+{/if}
+
+</div>
+
+<div class="ui-widget row">
+	<div class="ui-state-default ui-corner-all pad"> 
+		<div>
+		  <span style="float: left;" id="task_hours">{$TASK_HOURS}</span>
+		  {if $S_STAFF and not $S_STAFF_COMPLETE}<span style="float: right;"><a href="javascript:;" class="noborder prompt" rel="#timelog-form"><span class="time-add ico">Add Hours</span></a></span>{/if}
+		</div>
+		<div style="clear: both;"></div>
+	</div>
+</div>
+
+<table class="sortable datagrid" style="width: 100%;" id="timelog" style="display: {if $SHOW_TIMELOG}block{else}none{/if}">
+<thead>
+	<tr class="ui-widget-header">
+		{if $S_STAFF}<th class="icon sorttable_nosort"></th>{/if}
+		<th style="width: 150px;">Person</th>
+		<th style="width: 80px;">Work Date</th>
+		<th style="width: 125px;">Timestamp</th>
+		<th style="width: 50px;">Hours</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody id="timelog-body">
+
+{section name=log loop=$timelogrow}
+<form method="post" action="{$BASE_URL}/timelog.php" id="timelogdetails-{$timelogrow[log].TASK_LOG_ID}">
+<fieldset>
+	<input type="hidden" name="task_id" value="{$TASK_ID}" />
+	<input type="hidden" name="task_log_id" value="{$timelogrow[log].TASK_LOG_ID}" />
+	<tr id="timerow{$timelogrow[log].TASK_LOG_ID}" class="ui-widget-content">
+		{if $S_STAFF}
+		<td class="icon">
+			<input type="submit" name="removetime" class="delete ico" value="" />
+		</td>
+		{/if}
+		<td>{$timelogrow[log].WORKER_NAME}</td>
+		<td>{$timelogrow[log].WORK_DATE}</td>
+		<td>{$timelogrow[log].DATE_LOGGED}</td>
+		<td style="text-align:center;">{$timelogrow[log].WORK_HOURS}</td>
+		<td>{if $timelogrow[log].WORK_DESCRIPTION|count_characters:true gt 99}<a style="float:right;" class="prompt" rel="#worklog-{$timelogrow[log].TASK_LOG_ID}" /><span class="task-open ico">More</span></a>{/if}{$timelogrow[log].WORK_DESCRIPTION|strip_tags|truncate:100:"...":true}</td>
+	</tr>
+</fieldset>
+</form>
+{/section}
+
+</tbody>
+</table>
+
+{if $S_STAFF and not $S_CLIENT_COMPLETE}
+<div id="timelog-form" class="dialog-wysiwyg" title="Add Hours For: {$TASK_NAME}"> 
+	<p>Make sure to include a very detailed description to display on the client invoice.</p>
+	<form action="{$BASE_URL}/timelog.php" method="post" id="timeform">
+		<fieldset>
+		<input type="hidden" name="task_id" value="{$TASK_ID}" />
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+
+		<div class="row">
+			<div class="left">
+				<label for="hours_worked">Hours</label>
+				<label for="hours_worked" class="error" title="Time worked is required between 0.25 and 8.00 hours."></label>
+				<input class="ui-input" type="text" name="hours_worked" id="hours_worked" />
+			</div>
+			<div class="right">
+				<label for="work_date">Work Date</label>
+				<label for="work_date" class="error" title="Work date is required!"></label>
+				<input class="ui-input inline-date-pick" type="text" name="work_date" id="work_date" readonly="readonly" />
+			</div>
+		</div>
+
+		<div class="row">&nbsp;</div>
+		
+		<div class="row">
+			<label for="rate_id">Service Rates</label>
+			<label for="rate_id" class="error" title="Rate is required!"></label>
+			<select class="radiodropdown" name="rate_id" id="rate_id" validate="required:true,min:1">
+				{section name=rate loop="$raterow"}
+				{if not $raterow[rate].HOURLY}<option value="{$raterow[rate].RATE_ID}">{$raterow[rate].NAME}</option>{/if}
+				{/section}
+			</select>
+		</div>
+
+		<div class="row">
+			<label for="description">Work Details</label>
+			<textarea name="description" rows="1" cols="1" id="description" class="wysiwyg_plain" style="width: 90%"></textarea>
+		</div>
+
+		<button type="submit" name="addtime" id="submitbutton"><span class="save">Save</span></button>
+		<a class="button" onclick="$('#timelog-form').dialog('close');"><span class="close ico">Close</span></a>
+		
+		</fieldset>
+		
+	</form>
+</div>
+{/if}
+
+{section name=log loop="$timelogrow"}
+<div id="worklog-{$timelogrow[log].TASK_LOG_ID}" class="dialog" title="Details of Timelog #{$timelogrow[log].TASK_LOG_ID}">
+	{$timelogrow[log].DATE_LOGGED} | {$timelogrow[log].WORKER_NAME}
+	<p>{$timelogrow[log].WORK_DESCRIPTION}</p>
+	<a class="button" onclick="$('#worklog-{$timelogrow[log].TASK_LOG_ID}').dialog('close');"><span class="close ico">Close</span></a>
+</div>
+{/section}
+
+{if $S_CLIENT_COMPLETE}
+<div class="datagrid-wrapper noticeme">
+	<p><span class="alert ico">&nbsp;</span>This task was marked complete: <strong>{$USER_APPROVED_NAME} / {$STATUS_DATE}</strong>.</p>
+</div>
+{/if}
+
+{if $S_STAFF_COMPLETE and ($S_ADMINISTRATOR or $U_APPROVE_TASK)}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="soft-error ico">&nbsp;</span>To continue development on your project, we need you to approve the completed work for this task.</p>
+		<a name="myfeedback"></a>
+		<h3>Feedback</h3>
+		<p>Your feedback is needed on this task before we can move forward with your project.</p>
+		<button type="button" class="prompt" rel="#feedback">
+			<span class="feedback">Leave Feedback</span>
+		</button>
+	</div>
+</div>
+
+<div id="feedback" class="dialog" style="width: 550px;" title="Client Feedback">
+
+	<form method="post" action="tasks.php" id="feedbackform">
+	<fieldset>
+	<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+	<input type="hidden" name="task_id" value="{$TASK_ID}" />
+
+	<p>We need your approval of this task before we can continue further project development. 
+	If you would like any modifications to the work completed for this task, please let us know in the text-box below. We'd love to hear positive feedback too!</p>
+
+	<div class="row">
+		<label for="client_notes">My Feedback</label>
+		<textarea name="client_notes" id="client_notes" rows="1" cols="1" class="wysiwyg_simple" style="width: 100%;"></textarea>
+	</div>
+
+	<div style="clear: both;">&nbsp;</div>
+
+	<p>
+		<button type="submit" name="approve">
+			<span class="approve">Approve Task Work</span>
+		</button>
+		<button type="submit" name="reopen">
+			<span class="thumbdown">More Work Needed</span>
+		</button>
+		<a class="button" onclick="$('#feedback-modal').dialog('close');"><span class="close ico">Cancel</span></a>
+	</p>
+	</fieldset>
+	</form>
+</div>
+{/if}
+
+{if $S_STAFF}
+<div style="clear: both;"></div>
+<h2>Actions</h2>
+<div id="actions" class="buttons">
+
+	{if $S_ADMINISTRATOR or ($S_STAFF and $U_EDIT_TASK)}
+	<a class="button" title="Edit This Task" href="{$BASE_URL}/tasks.php?mode=edit&amp;id={$TASK_ID}">
+		<span class="task-edit">Edit</span>
+	</a>
+	{/if}
+	
+	{if (not $S_STAFF_COMPLETE and not $S_CLIENT_COMPLETE) and ($S_ADMINISTRATOR or $U_FINISH_TASK)}
+	<button type="button" class="prompt" rel="#finish">
+		<span class="approve">Finish Task</span>
+	</button>
+	
+	<div id="finish" class="dialog" title="Finish this Task?">
+		<form method="post" action="tasks.php" id="taskform">
+		  <fieldset>
+			<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+			<input type="hidden" name="task_id" value="{$TASK_ID}" />
+			<p>This will notify the client to review the work on this task. Are you sure this task is complete and ready for client review &amp; approval?</p>
+			<button type="submit" name="complete">
+				<span class="approve">Finish Task</span>
+			</button>
+			<a class="button" onclick="$('#finish').dialog('close');"><span class="close ico">Cancel</span></a>
+		  </fieldset>
+		</form>
+	</div>
+	{/if}
+	
+	{if $S_CLIENT_COMPLETE and ($S_ADMINISTRATOR or ($S_STAFF and $U_CREATE_TASK))}
+	<button type="button" class="prompt" rel="#reopen">
+		<span class="redflag">Reopen This Task</span>
+	</button>
+	
+	<div id="reopen" class="dialog" title="Reopen this Task?">
+		<form method="post" action="tasks.php" id="taskform">
+		<fieldset>
+		
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+		<input type="hidden" name="task_id" value="{$TASK_ID}" />
+		<p>Are you sure you want to reopen this task?</p>
+		<button type="submit" name="staff_reopen">
+			<span class="approve">Confirm: Reopen Task</span>
+		</button>
+		<a class="button" onclick="$('#reopen').dialog('close');"><span class="close ico">Cancel</span></a>
+		</fieldset>
+		</form>
+	</div>
+	{/if}
+	
+	{if $S_ADMINISTRATOR or ($S_STAFF and $U_DELETE_TASK)}
+	<button type="button" class="prompt" rel="#deletetask">
+		<span class="delete">Delete Task</span>
+	</button>
+	
+	<div id="deletetask" class="dialog" title="Confirm &amp; Delete">
+		<form method="post" action="tasks.php" id="taskform">
+		<fieldset>
+		
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+		<input type="hidden" name="task_id" value="{$TASK_ID}" />
+		<p>Are you sure you want to delete this task?</p>
+		<button type="submit" name="delete">
+			<span class="approve">Confirm Delete</span>
+		</button>
+		<a class="button" onclick="$('#deletetask').dialog('close');"><span class="close ico">Cancel</span></a>
+		</fieldset>
+		</form>
+	</div>
+	{/if}
+
+	</fieldset>
+	</form>
+
+</div>
+
+{/if}
+
+{if $S_STAFF}
+	<div id="task-users" class="dialog" title="Task Users">
+	{include file="template/assigned_users.html"}
+	</div>
+{/if}
+
+{else}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="alert ico">&nbsp;</span>You are not authorized to view this task! 
+	</div>
+</div>{/if}

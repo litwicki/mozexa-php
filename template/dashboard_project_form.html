@@ -1,0 +1,115 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_project_form.html 49 2010-06-08 14:01:42Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+<script type="text/javascript" src="{$BASE_URL}/js/projects/project_form.js"></script>
+
+{if ($SHOW_FORM and $S_STAFF and ($U_ADD_PROJECT or $U_EDIT_PROJECT)) or $S_ADMINISTRATOR}
+<div class="form" id="projectbox">
+	
+	<h1>{$FORM_NAME}</h1>
+	
+	<div class="ui-widget row" id="complete" style="display: none;">
+		<div class="ui-state-highlight ui-corner-all pad"> 
+			<span id="project-success"></span>
+		</div>
+	</div>
+
+	<form method="post" id="projectform" action="projects.php" enctype="multipart/form-data">
+		<fieldset>
+		<input type="hidden" name="project_id" value="{$PROJECT_ID}" />
+
+		<div class="row">
+			<label for="project_name">Project Name</label>
+			<input class="ui-input" type="text" name="project_name" id="project_name" value="{$PROJECT_NAME}" validate="required:true" title="Project name cannot be blank" />
+		</div>
+		
+		<div class="row">
+			<label>Does this project require a contract with the client? <span class="help ico" title="Some projects may not require a contract with the client. Projects that do require a contract, are not 'active' until their proposal/contract is approved. A project that does not require a contract, may still have one.">&nbsp;</span></label>
+			<input type="checkbox" name="contract_required" id="contract_required" class="ui-custom-input"{if $CONTRACT_REQUIRED} checked="checked"{/if} />
+			<label for="contract_required">Contract Required</label>
+		</div>
+
+		<div class="row">
+			<label for="project_client_id">Company</label>
+			<table>
+				<tr>
+					<td>
+						<select class="radiodropdown" name="project_client_id" id="project_client_id" validate="required:true,min:1" title="A project must have a client!">
+						<option value="">Select One</option>
+						{section name=client loop=$clientlist}
+						<option value="{$clientlist[client].CLIENT_ID}"{if $clientlist[client].SELECTED} selected="selected"{/if}>{$clientlist[client].COMPANY}</option>
+						{/section}
+						</select>
+					</td>
+					<td style="padding-left: 20px;">
+						<a class="button prompt" rel="#newclient-popup" href="javascript:;"><span class="client-add ico">Add New</span></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="row">
+			<label for="project_users">Assign Staff Member(s)&nbsp;<span class="help ico" title="Assign a user to a project, and later manage their project permissions to supersede global permissions.">&nbsp;</span></label>
+			<select class="multiselect" name="project_users[]" id="project_users" multiple="multiple">
+				<option value="">Select Staff Member</option>
+				{section name=user loop="$userlist"}
+				<option value="{$userlist[user].USER_ID}"{if $userlist[user].ASSIGNED} selected="selected"{/if}>{$userlist[user].USER_REALNAME}</option>
+				{/section}
+			</select>
+		</div>
+		
+		<div class="row">
+			<label for="project_description">Project Details</label>
+			<textarea name="project_description" id="project_description" rows="1" cols="1" class="wysiwyg">{$PROJECT_DESCRIPTION}</textarea>
+		</div>
+		
+		{if ($USER_ID eq $OWNER_ID) or $S_ADMINISTRATOR or (not $SHOW_DETAIL and $U_ADD_PROJECT)}
+		<div class="row">
+			<label for="project_managers">Assign Project Manager(s)&nbsp;<span class="help ico" title="Assign managers to this project to manage the project and permissions of assigned users.">&nbsp;</span></label>
+			<select class="multiselect" name="project_managers[]" id="project_managers" multiple="multiple">
+				<option value="">Select Staff Member</option>
+				{section name=user loop="$projectmanager_row"}
+				<option value="{$projectmanager_row[user].USER_ID}"{if $projectmanager_row[user].ASSIGNED} selected="selected"{/if}>{$projectmanager_row[user].USER_REALNAME}</option>
+				{/section}
+			</select>
+		</div>
+		{else}
+			{if $SHOW_DETAIL}
+			<div class="ui-widget row">
+				<div class="ui-state-error ui-corner-all pad"> 
+					<span class="error">&nbsp;</span>Only the project owner {$PROJECT_OWNER} or website administrator can edit project managers.
+				</div>
+			</div>
+			{/if}
+		{/if}
+		
+		<div id="project-error"></div>
+
+		<div class="buttons">
+			<button type="submit" name="save" id="save">
+				<span class="save">Save</span>
+			</button>
+
+			<a class="button" href="{$BASE_URL}/projects.php?id={$PROJECT_ID}">
+				<span class="cancel ico">Cancel</span>
+			</a>
+		</div>
+	
+		</fieldset>
+	</form>
+
+</div>
+
+<div id="newclient-popup" class="dialog" title="New Client">
+{include file="template/dashboard_client_form_popup.html"}
+</div>
+
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error">&nbsp;</span>You do not have permissions to access this page.
+	</div>
+</div>
+{/if}

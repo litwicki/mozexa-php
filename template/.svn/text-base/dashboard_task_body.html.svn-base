@@ -1,0 +1,35 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+{include file="template/dashboard_menu.html"}
+
+<div id="dashboard">
+
+{if $TASK_ERROR eq ''}
+	{if $SHOW_DETAIL}
+		{if $SHOW_FORM}
+			{include file="template/dashboard_task_form.html"}
+		{else}
+			{include file="template/dashboard_task_details.html"}
+		{/if}
+	{else}
+		{if $SHOW_FORM}
+			{include file="template/dashboard_task_form.html"}
+		{else}
+			{include file="template/dashboard_mytasks.html"}
+		{/if}
+	{/if}
+{else}
+	<div class="ui-widget row">
+		<div class="ui-state-error ui-corner-all pad"> 
+			<span class="alert ico">{$TASK_ERROR}</span>
+		</div>
+	</div>
+{/if}
+</div>
+
+{include file="template/overall_footer.html"}

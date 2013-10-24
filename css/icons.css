@@ -1,0 +1,258 @@
+/**
+ *	@author		jake@litwickimedia.com, Litwicki Media
+ *	@copyright	2009,2010 Litwicki Media LLC
+ *	@SVN:		$Id: icons.css 45 2010-06-06 22:21:29Z jake $
+ */
+ 
+
+* { background-repeat: no-repeat; background-position: left center; }
+
+.ico * { border: none !important; }
+
+.ico, .button span, button span {
+	padding: 2px 0 4px 20px;
+	white-space: nowrap;
+	background-position: 0 3px;
+	background-repeat: no-repeat !important;
+	overflow: visible;
+	cursor: pointer;
+}
+
+td.icon span.ico, th.icon span.ico { margin: -2px 0 0 0 !important; float: left; width: 20px; }
+
+img.ico { margin: 0 0 -3px 0; border: none; padding: 0; }
+
+input { 
+	width: 18px; 
+	margin: -2px 0 0 0; 
+	height: 18px; 
+	background-color: transparent; 
+	border: none;
+}
+
+ul { background-image: none !important; }
+ul li { background-repeat: no-repeat; background-position: top left !important; }
+
+ul.subnav li { background-image: url(/images/icons/fugue/information.png); }
+ul.social li, li.social, ul.users li  { background-image: url(/images/icons/fugue/users.png); }
+ul.good li, li.good, .good { background-image: url(/images/icons/fugue/tick.png); }
+ul.arrow li, .arrow, li.arrow { background-image: url(/images/icons/fugue/arrow-transition.png); }
+ul.wrench li, li.wrench, .wrench { background-image: url(/images/icons/fugue/wrench.png); }
+ul.work li, li.work, .work { background-image: url(/images/icons/fugue/wrench-screwdriver.png); }
+ul.bad li { background-image: url(/images/icons/fugue/thumb.png); }
+ul.questions li { padding: 2px 0 2px 24px; background-image: url(/images/icons/fugue/question.png); }
+ul.services li { background-image: url(/images/icons/fugue/service-bell.png); }
+ul.support li { background-image: url(/images/icons/fugue/shortcut.png); }
+
+li.notes, .note, ul.notes li { background-image: url(/images/icons/fugue/notebook.png); }
+.notes-edit { background-image: url(/images/icons/fugue/notebook--pencil.png); }
+
+.arrow-down { background-image: url(/images/icons/fugue/arrow-curve-270-left.png); }
+.arrow-left { background-image: url(/images/icons/fugue/arrow-transition-180.png); }
+
+.news { background-image: url(/images/icons/fugue/newspapers.png); }
+.new { background-image: url(/images/icons/fugue/new.png); }
+
+.blog { background-image: url(/images/icons/fugue/blogs.png); }
+.blogs { background-image: url(/images/icons/fugue/blogs.png); }
+.blog-add { background-image: url(/images/icons/fugue/blog--plus.png); }
+.blog-edit { background-image: url(/images/icons/fugue/blog--pencil.png); }
+.blog-open { background-image: url(/images/icons/fugue/blog--arrow.png); }
+
+.project, li.project  { background-image: url(/images/icons/fugue/folder.png); }
+.projects, ul.projects li { background-image: url(/images/icons/fugue/folders.png); }
+.project-add { background-image: url(/images/icons/fugue/folder--plus.png); }
+.project-edit { background-image: url(/images/icons/fugue/folder--pencil.png); }
+.project-open { background-image: url(/images/icons/fugue/folder--arrow.png); }
+.project-delete { background-image: url(/images/icons/fugue/folder--minus.png); }
+.project-complete { background-image: url(/images/icons/fugue/folder-export.png); }
+
+.task { background-image: url(/images/icons/fugue/sticky-note.png); }
+.tasks { background-image: url(/images/icons/fugue/sticky-notes-text.png); }
+.task-add { background-image: url(/images/icons/fugue/sticky-note--plus.png); }
+.task-edit { background-image: url(/images/icons/fugue/sticky-note--pencil.png); }
+.task-open { background-image: url(/images/icons/fugue/sticky-note--arrow.png); }
+.task-delete { background-image: url(/images/icons/fugue/sticky-note--minus.png); }
+.task-complete { background-image: url(/images/icons/fugue/sticky-note--arrow.png); }
+
+.request { background-image: url(/images/icons/fugue/report.png); }
+.requests { background-image: url(/images/icons/fugue/reports-stack.png); }
+.request-add  { background-image: url(/images/icons/fugue/report--plus.png); }
+.request-edit { background-image: url(/images/icons/fugue/report--pencil.png); }
+.request-open { background-image: url(/images/icons/fugue/report--arrow.png); }
+.request-delete { background-image: url(/images/icons/fugue/report--minus.png); }
+.request-complete, .request-go { background-image: url(/images/icons/fugue/report--arrow.png); }
+
+.file { background-image: url(/images/icons/fugue/document.png); }
+.files { background-image: url(/images/icons/fugue/documents.png); }
+.file-add  { background-image: url(/images/icons/fugue/document--plus.png); }
+.file-edit { background-image: url(/images/icons/fugue/document--pencil.png); }
+.file-open { background-image: url(/images/icons/fugue/document--arrow.png); }
+.file-delete { background-image: url(/images/icons/fugue/document--minus.png); }
+.file-complete { background-image: url(/images/icons/fugue/document--arrow.png); }
+
+.print { background-image: url(/images/icons/fugue/printer.png); }
+
+.email { background-image: url(/images/icons/fugue/mail.png); }
+.emails { background-image: url(/images/icons/fugue/mails.png); }
+.email-add { background-image: url(/images/icons/fugue/mail--plus.png); }
+.email-edit { background-image: url(/images/icons/fugue/mail--pencil.png); }
+.email-open  { background-image: url(/images/icons/fugue/mail--arrow.png); }
+
+.message, .message-read { background-image: url(/images/icons/fugue/mail.png); }
+.messages { background-image: url(/images/icons/fugue/inbox.png); }
+.message-add { background-image: url(/images/icons/fugue/mail--plus.png); }
+.message-edit { background-image: url(/images/icons/fugue/mail--pencil.png); }
+.message-open, .message-go { background-image: url(/images/icons/fugue/mail--arrow.png); }
+.message-unread { background-image: url(/images/icons/fugue/mail--pin.png); }
+.message-delete { background-image: url(/images/icons/fugue/mail--minus.png); }
+
+.portfolio { background-image: url(/images/icons/fugue/envelope.png); }
+.portfolios { background-image: url(/images/icons/fugue/envelope-label.png); }
+.portfolio-add { background-image: url(/images/icons/fugue/envelope--plus.png); }
+.portfolio-edit { background-image: url(/images/icons/fugue/envelope--pencil.png); }
+.portfolio-open { background-image: url(/images/icons/fugue/envelope--arrow.png); }
+
+.proposal { background-image: url(/images/icons/fugue/clipboard.png); }
+.proposals { background-image: url(/images/icons/fugue/clipboard-list.png); }
+.proposal-add { background-image: url(/images/icons/fugue/clipboard--plus.png); }
+.proposal-edit { background-image: url(/images/icons/fugue/clipboard--pencil.png); }
+.proposal-open { background-image: url(/images/icons/fugue/clipboard--arrow.png); }
+.proposal-delete { background-image: url(/images/icons/fugue/clipboard--minus.png); }
+
+.ui { background-image: url(/images/icons/fugue/layout-header-2.png); }
+.ui-add { background-image: url(/images/icons/fugue/layout-select-sidebar.png); }
+.ui-edit { background-image: url(/images/icons/fugue/layout-design.png); }
+
+.text { background-image: url(/images/icons/fugue/balloon.png); }
+.text-edit { background-image: url(/images/icons/fugue/balloon--pencil.png); }
+.text-add { background-image: url(/images/icons/fugue/balloon--plus.png); }
+.text-open { background-image: url(/images/icons/fugue/balloon--arrow.png); }
+
+.user { background-image: url(/images/icons/fugue/user.png); }
+.users, .group { background-image: url(/images/icons/fugue/users.png); }
+.user-add { background-image: url(/images/icons/fugue/user--plus.png); }
+.user-go { background-image: url(/images/icons/fugue/user--arrow.png); }
+.user-edit { background-image: url(/images/icons/fugue/user--pencil.png); }
+.user-manager { background-image: url(/images/icons/fugue/user-business.png); }
+.user-staff { background-image: url(/images/icons/fugue/user-black.png); }
+.user-contractor { background-image: url(/images/icons/fugue/user-worker.png); }
+.user-administrator { background-image: url(/images/icons/fugue/user-silhouette.png); }
+.user-male { background-image: url(/images/icons/fugue/user-gray.png); }
+.user-female { background-image: url(/images/icons/fugue/user-female.png); }
+.user-delete { background-image: url(/images/icons/fugue/user--minus.png); }
+
+.client, .clients { background-image: url(/images/icons/fugue/briefcase.png); }
+.client-add { background-image: url(/images/icons/fugue/briefcase--plus.png); }
+.client-go { background-image: url(/images/icons/fugue/briefcase--arrow.png); }
+.client-edit { background-image: url(/images/icons/fugue/briefcase--pencil.png); }
+.client-delete { background-image: url(/images/icons/fugue/briefcase--minus.png); }
+
+.money, .invoice { background-image: url(/images/icons/fugue/money.png); }
+.money-add, .invoice-add { background-image: url(/images/icons/fugue/money--plus.png); }
+.money-edit, .invoice-edit { background-image: url(/images/icons/fugue/money--pencil.png); }
+.money-go, .invoice-go { background-image: url(/images/icons/fugue/money--arrow.png); }
+.money-coin, .invoices { background-image: url(/images/icons/fugue/money-coin.png); }
+.money-paid, .invoice-paid { background-image: url(/images/icons/fugue/money-paid.png); }
+.money-unpaid, .invoice-unpaid { background-image: url(/images/icons/fugue/money-unpaid.png); }
+.money-delete, .invoice-delete { background-image: url(/images/icons/fugue/money--minus.png); }
+
+.comment { background-image: url(/images/icons/fugue/balloon.png); }
+
+.link { background-image: url(/images/icons/fugue/shortcut.png); }
+.open { background-image: url(/images/icons/fugue/plus-white.png); }
+.help { background-image: url(/images/icons/fugue/question-frame.png); }
+
+.alert, label.error, span.error, div.error, p.error { background-image: url(/images/icons/fugue/exclamation-red.png); }
+.alert:hover, label.error:hover, span.error:hover, div.error:hover, p.error:hover { background-image: url(/images/icons/fugue/exclamation-red-frame.png); }
+
+.soft-error { background-image: url(/images/icons/fugue/exclamation.png); }
+.server { background-image: url(/images/icons/fugue/servers-network.png); }
+
+.config { background-image: url(/images/icons/fugue/gear.png); }
+.add { background-image: url(/images/icons/fugue/plus-circle.png); }
+.add:hover { background-image: url(/images/icons/fugue/plus-circle-frame.png); }
+
+.delete { background-image: url(/images/icons/fugue/cross.png); }
+.delete:hover { background-image: url(/images/icons/fugue/cross.png); }
+
+.feedback { background-image: url(/images/icons/fugue/arrow-circle-double.png); }
+.wordpress { background-image: url(/images/icons/wpmini.png); }
+.details { background-image: url(/images/icons/fugue/arrow-continue.png); }
+.logout { background-image: url(/images/icons/fugue/slash-button.png); }
+.computer { background-image: url(/images/icons/fugue/computer.png); }
+
+.app-monitor { background-image: url(/images/icons/fugue/application-monitor.png); }
+
+input.delete, input.approve { width: 20px; }
+input.delete:hover { background-image: url(/images/icons/fugue/cross.png); }
+
+.close, .cancel { 
+	background-image: url(/images/icons/fugue/cross-circle.png); 
+	background-position: 0 2px; 
+	background-repeat: no-repeat; 
+}
+
+.close:hover, .cancel:hover, button:hover .close, button:hover .cancel, .button:hover .cancel, .button:hover .close { 
+	background-image: url(/images/icons/fugue/cross-circle-frame.png); 
+	background-position: 0 2px; 
+	background-repeat: no-repeat;
+	opacity: 1.0;
+}
+
+*+html button.close, *+html button.cancel, *+html button.close:hover, *+html button.cancel:hover { background-position: 0 10px; }
+
+.check, .approve, button .check, button .approve { 
+	background-image: url(/images/icons/fugue/tick-circle.png); 
+}
+
+.check:hover, .approve:hover, button:hover .approve, button:hover .check, .button:hover .check, .button:hover .approve { 
+	background-image: url(/images/icons/fugue/tick-circle-frame.png);
+	opacity: 1.0;
+}
+
+.complete { background-image: url(/images/icons/fugue/tick-button.png); }
+
+.pages { background-image: url(/images/icons/fugue/documents.png); }
+.plain { background: none; padding: 0; margin: 0; }
+
+.user, .profile { background-image: url(/images/icons/fugue/user.png); }
+.user-add { background-image: url(/images/icons/fugue/user--plus.png); }
+.user-go { background-image: url(/images/icons/fugue/user--arrow.png); }
+.user-edit { background-image: url(/images/icons/fugue/user--pencil.png); }
+
+.user-male { background-image: url(/images/icons/fugue/user.png); }
+.user-female { background-image: url(/images/icons/fugue/user-female.png); }
+
+.phone { background-image: url(/images/icons/fugue/telephone.png); }
+
+.company 	{ background-image: url(/images/icons/fugue/briefcase.png); }
+.date 		{ background-image: url(/images/icons/fugue/calendar.png); }
+.time 		{ background-image: url(/images/icons/fugue/clock.png); }
+.time-add 	{ background-image: url(/images/icons/fugue/clock--plus.png); }
+.save		{ background-image: url(/images/icons/fugue/disk-black.png); }
+.breadcrumb	{ background-image: url(/images/icons/fugue/sitemap_color.png); }
+.thumbup 	{ background-image: url(/images/icons/fugue/thumb-up.png); }
+.thumbdown 	{ background-image: url(/images/icons/fugue/thumb.png); }
+.home 		{ background-image: url(/images/icons/fugue/home.png); }
+.dashboard 	{ background-image: url(/images/icons/fugue/dashboard.png); }
+.hourglass	{ background-image: url(/images/icons/fugue/hourglass.png); }
+.file 		{ background-image: url(/images/icons/fugue/box-label.png); }
+.services,
+.service	{ background-image: url(/images/icons/fugue/service-bell.png); }	
+.image		{ background-image: url(/images/icons/fugue/image.png); }
+.twitter 	{ background-image: url(/images/icons/fugue/balloon-twitter.png); }
+.facebook 	{ background-image: url(/images/icons/fugue/balloon-facebook.png); }
+.diamond	{ background-image: url(/images/icons/fugue/diamond.png); }
+.star		{ background-image: url(/images/icons/fugue/star.png); }
+.colors		{ background-image: url(/images/icons/fugue/color-swatches.png); }
+
+a.close span, a.cancel span {
+	padding: 10px;
+	background-image: url(/images/icons/fugue/cross-circle.png) top; 
+}
+
+a.close:hover  span, a.cancel:hover  span {
+	background-image: url(/images/icons/fugue/cross-circle-frame.png) top; 
+}
+

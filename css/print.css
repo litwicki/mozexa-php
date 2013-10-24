@@ -1,0 +1,13 @@
+/**
+ *	@Author:		jake@litwickimedia.com, Litwicki Media LLC
+ *	@Website:		http://www.litwickimedia.com
+ *	@SVN:			$Id:$
+ *	@copyright:		Copyright (c) 2009, 2010 Litwicki Media LLC.
+ */
+
+ body { background: none !important; }
+ #dashboard-menu { display: none !important; }
+ #page-footer { background: none !important; }
+ #page-header { display: none !important; }
+ 
+ #page-body { background: none !important; border: none !important; margin: 1em auto; }

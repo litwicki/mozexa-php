@@ -1,0 +1,18 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<h2>{if $PROJECT_ID gt 0}Project{else}Task{/if} Users</h2>
+<p>The following users are assigned to this {if $PROJECT_ID gt 0}project{else}task{/if}.</p>
+
+<ul class="pretty">
+	{section name=user loop="$assigneduser"}
+	<li class="{$assigneduser[user].GENDER_ICO}">
+	{if $PROJECT_ID gt 0}<a href="{$BASE_URL}/{if $S_PROJECT_MANAGER or $S_ADMINISTRATOR}projects.php?id={$PROJECT_ID}&amp;u={$assigneduser[user].USER_ID}{else}users.php?id={$assigneduser[user].USER_ID}{/if}">{$assigneduser[user].USER_REALNAME}</a>{else}{$assigneduser[user].USER_REALNAME}{/if}
+	</li>
+	{sectionelse}
+	<li class="soft-error">There are no users assigned to this {if $PROJECT_ID gt 0}project{else}task{/if}!</li>
+	{/section}
+</ul>

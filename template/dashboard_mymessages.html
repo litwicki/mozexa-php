@@ -1,0 +1,108 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_mymessages.html 42 2010-06-06 01:40:48Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript" src="{$BASE_URL}/js/messages/message_details.js"></script>
+<div id="messages">
+
+	<h3>{if $S_STAFF and $U_ADD_MESSAGE}<span style="float: right;"><a href="{$BASE_URL}/messages.php?mode=add"><span class="message-add ico">New Message</span></a></span>{/if}{if $S_PROJECT}{$PROJECT_NAME}{else}My{/if} Messages&nbsp;({$MESSAGE_COUNT})</h3>
+	<p class="small">{if $S_PROJECT}
+		Unread messages for {$PROJECT_NAME}.
+	{else}
+		{if $S_STAFF}Unread messages for all active projects.{else}Unread messages for my projects.{/if}
+	{/if}</p>
+
+	{if $SHOW_MESSAGELIST or (S_MESSAGE and $MESSAGE_COUNT gt 0)}
+	<div class="datalist" id="messagelist">
+		<div class="ui-widget ui-widget-content ui-corner-all">
+			<div class="ui-widget-content">
+			<table id="mymessages" class="datagrid sortable">
+			<thead>
+				<tr class="ui-widget-header">
+					<th style="width: 30px;"></th>
+					<th>Message Detail</th>
+					<th style="width: 150px;">Author</th>
+					<th style="width: 125px;">Date Posted</th>
+					<th style="width: 50px;">Status</th>
+					<th style="width: 30px;">Replies</th>
+				</tr>
+			</thead>
+			<tbody>
+				{section name=message loop=$messagerow}
+				<tr class="ui-widget-content" id="message-{$messagerow[message].MESSAGE_ID}">
+					<td><a class="noborder prompt" href="javascript:;" rel="#delete-message-{$messagerow[message].MESSAGE_ID}"><span class="delete ico">&nbsp;</span></a></td>
+					<td class="desc"><strong><a href="{$BASE_URL}/messages.php?id={$messagerow[message].MESSAGE_ID}"><span class="message-open ico">{$messagerow[message].SUBJECT}</span></a></strong>
+					{if not $S_PROJECT and $messagerow[message].PROJECT_ID gt 0}
+					<br /><a class="small" href="{$BASE_URL}/projects.php?id={$messagerow[message].PROJECT_ID}"><span class="project-open ico">{$messagerow[message].PROJECT_NAME}</span></a>
+					{else}
+					<br /><a class="small" href="{$BASE_URL}/users.php?id={$messagerow[message].RECIPIENT_USER_ID}"><span class="{$messagerow[message].RECIPIENT_GENDER_ICO} ico">{$messagerow[message].RECIPIENT_NAME}</span></a>
+					{/if}
+					</td>
+					<td class="name">
+					  <a title="View User Profile: {$messagerow[message].USER_REALNAME}" href="{$BASE_URL}/users.php?id={$messagerow[message].USER_ID}">
+						{$messagerow[message].USER_REALNAME}
+					  </a>
+					</td>
+					<td class="date">{$messagerow[message].POST_DATE}</td>
+					<td class="icon">
+						{if $messagerow[message].SHOW_UPDATE}
+						<span class="time ico" title="{$messagerow[message].UPDATE_MESSAGE}">Updated</span>
+						{else}
+							{if $S_MARKED_READ}
+							<span class="offline ico" title="Marked 'Read' {$messagerow[message].STATUS_DATE}">Read</span>
+							{else}
+							<span class="new ico">New</span>
+							{/if}
+						{/if}
+					</td>
+					<td style="text-align: center;">{$messagerow[message].REPLY_COUNT}</td>
+				</tr>
+				{/section}
+			</tbody>
+			</table>
+			</div>
+		</div>
+	</div>
+
+	{include file="template/pagination.html"}
+	
+	{section name=message loop=$messagerow}
+	<div id="delete-message-{$messagerow[message].MESSAGE_ID}" class="dialog" title="Confirm Message Delete">
+		
+		<script type="text/javascript">
+		$().ready(function(){
+			$("#md-{$messagerow[message].MESSAGE_ID}").ajaxForm({
+				success: function(){
+					$('#delete-message-{$messagerow[message].MESSAGE_ID}').dialog('close');
+					$("#message-{$messagerow[message].MESSAGE_ID}").hide('slow');
+					checkTable('message-{$messagerow[message].MESSAGE_ID}');
+				}
+			});
+		});
+		</script>
+		
+		<h2>Confirm Delete</h2>
+		<p><strong>{$messagerow[message].SUBJECT}</strong></p>
+		<p>Are you sure you want to delete this message? This will permanently remove this message from displaying on your message list.</p>
+		
+		<form method="post" action="{$BASE_URL}/messages.php" id="md-{$messagerow[message].MESSAGE_ID}">
+			<div class="buttons row">
+				<input type="hidden" name="message_id" value="{$messagerow[message].MESSAGE_ID}" />
+				<button type="submit" name="delete"><span class="approve">Confirm Delete</span></button>
+				<a class="button" onclick="$('#delete-message-{$messagerow[message].MESSAGE_ID}').dialog('close');"><span class="close ico">Cancel</span></a>
+			</div>
+		</form>
+	</div>
+	{/section}
+	
+	{else}
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="soft-error ico">{$NO_MESSAGES}</span>
+		</div>
+	</div>
+	{/if}
+		
+</div>

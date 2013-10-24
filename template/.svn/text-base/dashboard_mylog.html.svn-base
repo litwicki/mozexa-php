@@ -1,0 +1,26 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div id="mylog" class="datalist">
+
+	<div class="dashboard-header">
+		<a class="noborder log-wrapper" href="#">
+		  <span class="pencil ico">Dashboard Log</span>
+		</a>
+		<p class="small">Complete log of all dashboard actions.</p>
+	</div>
+	
+	{if $SHOW_USER_LOG}
+	<ul class="loglist" id="log-wrapper" style="display: none;">
+	{section name=log loop=$logrow}
+		<li class="log"><em>{$logrow[log].LOG_DATE}</em> - {$logrow[log].LOG_DETAILS}</li>
+	{/section}
+	{else}
+	<p>No dashboard history available.</p>
+	</ul>
+	{/if}
+	
+</div>

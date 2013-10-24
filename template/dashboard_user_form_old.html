@@ -1,0 +1,90 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_user_form.html 12 2010-05-05 04:17:06Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{if ($S_STAFF and $U_ADD_USER) or $S_ADMINISTRATOR}
+<script type="text/javascript" src="{$BASE_URL}/js/users/user_form.js"></script>
+
+<div>
+	
+	<div class="left">
+	
+	<div class="ui-widget row" id="success" style="display: none;">
+		<div class="ui-state-highlight ui-corner-all pad"> 
+			<span class="approve ico"><span id="success-message"></span></span>
+		</div>
+	</div>
+
+	<form method="post" id="adduser" action="users.php">
+
+		<p>Please complete the user information below.</p>
+
+		<div class="ui-widget row" id="user-error" style="display: none;">
+			<div class="ui-state-error ui-corner-all pad"> 
+				<span class="error ico">&nbsp;</span>The email address <strong><span id="bad-email"></span></strong> is already used by an existing user!
+			</div>
+		</div>
+
+		<div class="row">
+			<label for="user_realname">Full Name</label>
+			<input class="ui-input" type="text" name="user_realname" id="user_realname" title="User's name is required" validate="required:true" />
+		</div>
+		
+		<div class="row">
+			<label for="user_email">Email</label>
+			<input class="ui-input" type="text" name="user_email" id="user_email" title="User's email is required" validate="required:true,email:true" />
+		</div>
+		
+		<div class="row">
+			<label for="user_aim">AOL Instant Messenger</label>
+			<input class="ui-input" type="text" name="user_aim" id="user_aim" />
+		</div>
+		
+		<div class="row">
+			<label title="We use user gender to customize certain icons">Gender&nbsp;<span class="help ico" title="This is only used to customize specific icons throughout the dashboard">&nbsp;</span></label>
+			<div class="radiobuttons">
+				<input type="radio" id="user-male" name="user_gender"  value="m" checked="checked" /><label for="user-male"><span class="user-male ico">Male</span></label>
+				<input type="radio" id="user-female" name="user_gender" value="f"  /><label for="user-female"><span class="user-female ico">Female</span></label>
+			</div>
+		</div>
+		
+		<div class="row">
+			<label for="group_id" title="Generally speaking it doesn't make much sense to have a user that is both a contractor and a client, but the possibility exists.">User Role(s)</label>
+			<select class="multiselect" name="user_groups[]" id="group_id">
+				<option value="">Select User Role(s)</option>
+				{section name=group loop="$grouprow"}
+				<option value="{$grouprow[group].GROUP_ID}"{if $grouprow[group].SELECTED} selected="selected"{/if}>{$grouprow[group].GROUP_NAME}</option>
+				{/section}
+			</select>
+		</div>
+		
+		<div class="row">
+			<label for="user_phone">Phone Number</label>
+			<input class="ui-input" type="text" name="user_phone" id="user_phone" title="Invalid phone number" validate="required:true,phone:true" />
+		</div>
+		
+		<button type="submit" name="saveuser" id="save">
+			<span class="approve">Save User</span>
+		</button>
+		<a class="button" onclick="javascript:history.go(-1);"><span class="close ico">Cancel</span></a>
+
+	</form>
+	</div>
+
+	<div class="right">
+		<div id="errors"></div>
+	</div>
+
+</div>
+
+<div style="clear:both;"></div>
+
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error ico">You are not authorized to add a new dashboard user!</span>
+	</div>
+</div>
+{/if}

@@ -1,0 +1,42 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+			<div style="clear:both;"></div>
+			
+		</div>
+
+	</div>
+	
+	<div id="page-footer">
+		<a href="http://www.mozexa.com/?r=litwickimediaclients.com"><img alt="Mozexa - Web based project collaboration." src="/images/logos/mozexa.png" /></a>
+	</div>
+
+</div>
+
+{$GOOGLE_CODE}
+
+{if $SHOW_DASHBOARD_ALERTS}
+<div id="myalerts">
+	
+	{section name=alert loop="$alertrow"}
+	<div id="alert-{$alertrow[alert].ALERT_ID}" class="growl" style="display: none;">
+		<form method="post" action="{$BASE_URL}/growl.php" id="growl-{$alertrow[alert].ALERT_ID}">
+			<fieldset>
+			<input type="hidden" name="alert_id" value="{$alertrow[alert].ALERT_ID}" />
+			<span style="float: right;">
+				<input type="submit" name="remove_growl" class="delete ico" value=""  />
+			</span>
+			{$alertrow[alert].ALERT_TEXT}
+			</fieldset>
+		</form>
+	</div>
+	{/section}
+	
+</div>
+{/if}
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_user_form_popup.html 7 2010-04-23 16:35:57Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript">
+$().ready(function() {
+	
+	{* force validation on userform *}
+	$("button#btn_saveuser").click(function(){
+		if( $("#adduser").valid() ) {
+			$("#adduser").validate().form();
+		} else {
+			return false;
+		}
+	});
+	
+	$("#adduser").ajaxForm({
+		clearForm: true,
+		resetForm: true,
+		dataType: 'json',
+		success: {if $S_PROJECT}addProjectUser{else}
+		function (data){
+			$('#newuser-modal').dialog('close');
+			$("#userlist-body").append(data.userRow);
+		return true;
+	}
+		{/if}
+	});
+		
+	$("#adduser").validate();
+});
+
+</script>
+
+<form method="post" id="adduser" action="users.php">
+<div id="newuser" class="dialog" title="Add New User">
+	<div class="form">
+		<p>Please complete the user information below.</p>
+
+		<div class="row">
+			<label for="user_name">Real Name</label>
+			<label for="user_name" class="error" title="User's name is required!">&nbsp;</label>
+			<div class="ui-widget">
+				<div class="ui-state-default ui-corner-all pad">
+					<input class="ui-input" type="text" name="user_name" id="user_name" validate="required:true" />
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<label>User Gender</label>
+			<div class="radiobuttons">
+				<input type="radio" id="user-male" name="user_gender" value="m" checked="checked" /><label for="user-male"><span class="user-male ico">Male</span></label>
+				<input type="radio" id="user-female" name="user_gender" value="f" /><label for="user-female"><span class="user-female ico">Female</span></label>
+			</div>
+		</div>
+
+		<div class="row">
+			<label for="user_email">Email</label>
+			<label for="user_email" class="error" title="User's email is required!">&nbsp;</label>
+			<div class="ui-widget">
+				<div class="ui-state-default ui-corner-all pad">
+					<input class="ui-input" type="text" name="user_email" id="user_email" validate="required:true,email:true" />
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<label for="user_phone">Phone Number</label>
+			<label for="user_phone" class="error" title="Invalid phone number!">&nbsp;</label>
+			<div class="ui-widget">
+				<div class="ui-state-default ui-corner-all pad">
+					<input class="ui-input" type="text" name="user_phone" id="user_phone" validate="phone:true" />
+				</div>
+			</div>
+		</div>
+
+		</div>
+
+		<p><button type="submit" name="saveuser" id="btn_saveuser">
+			<span class="approve">Save User</span>
+		</button>
+		<a class="button" onclick="$('#newuser').dialog('close');"><span class="close ico">Close</span></a></p>
+		
+	</div>
+</div>
+</form>

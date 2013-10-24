@@ -1,0 +1,94 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+{if not $S_EDIT_PROFILE}
+<script type="text/javascript">
+$().ready(function(){
+	{section name=client loop=$clientlist}
+	$("#delete-client-{$clientlist[client].CLIENT_ID}").ajaxForm({
+		clearForm: true,
+		resetForm: true,
+		success: function(){
+			$('#delete-client-{$clientlist[client].CLIENT_ID}').dialog('close');
+			$("#client-{$clientlist[client].CLIENT_ID}").hide("fast");
+			return true;
+		}
+	});
+	{/section}
+});
+</script>
+{/if}
+<div id="myclients" class="datalist">
+
+	{if $S_EDIT_PROFILE}
+	<h3>Companies</h3>
+	<p>Organizations {$PROFILE_USER_REALNAME} is a member of.</p>
+	{else}
+	<h3>{if $S_STAFF and $U_ADD_CLIENT}<span style="float: right;"><a href="{$BASE_URL}/clients.php?mode=add"><span class="client-add ico">New Client</span></a></span>{/if}{$COMPANY_NAME} Clients</h3>
+	<p class="small">Complete list of all <em>companies/organizations</em> within the {$DASHBOARD_NAME} Dashboard.</p>
+	{/if}
+
+	<div class="ui-widget ui-widget-content ui-corner-all">
+		<div class="ui-widget-content">
+		<table id="clientlist" class="sortable datagrid" style="width: 100%;">
+		<thead>
+			<tr class="ui-widget-header">
+				{if $S_STAFF and not $SHOW_DETAIL}<th style="width: 30px;" class="icon">&nbsp;</th>{/if}
+				<th style="width: 150px;">Company</th>
+				<th style="width: 100px;">Phone</th>
+				<th>Address</th>
+				<th style="width: 100px;">City</th>
+				<th style="width: 100px;">State</th>
+				<th style="width: 100px;">Zip</th>
+				{if $S_EDIT_PROFILE and $USER_ID eq $PROFILE_USER_ID}<th style="width: 50px;">Notices</th>{/if}
+			</tr>
+		</thead>
+		<tbody>
+			{section name=client loop=$clientlist}
+			<tr id="client-{$clientlist[client].CLIENT_ID}" class="ui-widget-content">
+				{if $S_STAFF and not $SHOW_DETAIL}
+				<td>
+					<span class="delete ico prompt" rel="#delete-client-{$clientlist[client].CLIENT_ID}">&nbsp;</span>
+					<div id="delete-client-{$clientlist[client].CLIENT_ID}" class="dialog" title="Delete {$clientlist[client].COMPANY}?">
+					<p>Are you sure you want to delete {$clientlist[client].COMPANY} from your dashboard?</p>
+					<form method="post" action="clients.php" id="delete-client-{$clientlist[client].CLIENT_ID}-form">
+						<fieldset>
+						  <input type="hidden" name="client_id" value="{$clientlist[client].CLIENT_ID}" />
+						  <button type="submit" name="delete"><span class="approve">Confirm Delete</span></button>
+						  <a class="button" onclick="$('#delete-client-{$clientlist[client].CLIENT_ID}').dialog('close');"><span class="close ico">Cancel</span></a>
+						</fieldset>
+					</form>
+					</div>
+				</td>
+				{/if}
+				<td><a href="{$BASE_URL}/clients.php?id={$clientlist[client].CLIENT_ID}"><span class="client-go ico">{$clientlist[client].COMPANY}</span></a></td>
+				<td>{$clientlist[client].PHONE}</td>
+				<td>{$clientlist[client].ADDRESS}</td>
+				<td>{$clientlist[client].CITY}</td>
+				<td>{$clientlist[client].STATE}</td>
+				<td>{$clientlist[client].ZIP}</td>
+				{if $S_EDIT_PROFILE and $USER_ID eq $PROFILE_USER_ID}
+				<td>
+					<form method="post" action="{$BASE_URL}/clients.php" id="clientform-client-{$clientlist[client].CLIENT_ID}">
+					<fieldset>
+						<input type="hidden" style="width:1px;" name="client_id" value="{$clientlist[client].CLIENT_ID}" />
+						<input type="hidden" style="width:1px;" name="user_id" value="{$PROFILE_USER_ID}" />
+						<input type="hidden" style="width:1px;" name="email" id="email-{$clientlist[client].CLIENT_ID}" value="{if $clientlist[client].EMAIL}0{else}1{/if}" />
+						<input type="checkbox" style="width:40px;" class="ui-custom-input client-email-toggle" id="emails-{$clientlist[client].CLIENT_ID}" name="emailtoggle" value="{$clientlist[client].CLIENT_ID}" {if $clientlist[client].EMAIL} checked="checked"{/if} />
+						<label for="emails-{$clientlist[client].CLIENT_ID}"><span class="email ico">&nbsp;</span></label>
+					</fieldset>
+					</form>
+				</td>
+				{/if}
+			</tr>
+			{/section}
+		</tbody>
+		</table>
+		</div>
+	</div>
+	
+	{include file="template/pagination.html"}
+
+</div>

@@ -1,0 +1,414 @@
+/**
+ *	@author		jake@litwickimedia.com, Litwicki Media
+ *	@copyright	2009,2010 Litwicki Media LLC
+ *	@SVN:		$Id: dashboard.css 40 2010-06-03 05:16:22Z jake $
+ */
+
+* {
+	/* Reset browsers default margin, padding and font sizes */
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-size: 100%;
+	/* Always show a scrollbar for short pages - stops the jump when the scrollbar appears. non-IE browsers */
+	height: 101%;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	margin: 0 0 0 -1px;
+	padding: 0;
+}
+
+body#print {
+	background-color: white;
+	margin: 2em auto;
+	width: 900px;
+}
+
+body#login_page #page-top, body#login_page #page-header, body#login_page #page-footer {
+	display: none;
+}
+
+body#login_page #page-body { 
+	width: 400px;
+	margin-top: 200px;
+}
+
+th, td { vertical-align: top; }
+
+h1 {
+	/* Forum name */
+	font-family: "Trebuchet MS", Helvetica, Arial;
+	font-weight: bold;
+	font-size: 2em;
+	margin: 0 0 .5em 0;
+	padding: 0;
+	border-bottom: 1px solid #ccc;
+	color: #555;
+}
+
+h2 {
+	/* Forum header titles */
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	color: #353535;
+	font-size: 1.4em;
+	margin: 0.8em 0 0.2em 0;
+}
+
+.big { 
+	font-size: 1.3em; 
+	font-family: "Times New Roman", serif; 
+	text-transform: uppercase; 
+	margin: 1em 0; 
+}
+
+h3 {
+	/* Sub-headers (also used as post headers, but defined later) */
+	font-size: 1.3em; 
+	font-family: "Times New Roman", serif; 
+	text-transform: uppercase; 
+	border-bottom: 1px dotted #ccc;
+	margin-bottom: 4px;
+	padding-bottom: 2px;
+	margin-top: 1.5em;
+	font-weight: normal;
+}
+
+/* for embedded icon links within sub-headers */
+h3 a { 
+	font-size: 12px;
+	font-family: "Trebuchet MS", Arial, sans-serif;
+	text-decoration: none !important;
+}
+
+h3.signature-line {
+	border-top: 1px solid #000;
+	border-bottom: none;
+	font-family: "Trebuchet MS", Arial;
+	font-size: 1em;
+	color: #353535;
+	padding-top: 2px;
+	margin: 4em 0 1em 0 !important;
+}
+
+h4 {
+	/* Forum and topic list titles */
+	font-family: "Trebuchet MS", Verdana, Helvetica, Arial, Sans-serif;
+	font-size: 1.3em;
+}
+
+p {
+	line-height: 1.3em;
+	margin-bottom: 1.5em;
+	font-size: 1em;
+}
+
+.small {
+	font-size: .85em;
+	font-family: Verdana;
+}
+
+img {
+	border-width: 0;
+}
+
+
+hr {
+	/* Also see tweaks.css */
+	border: 0 none #FFFFFF;
+	border-top: 1px solid #d9d9d9;
+	height: 1px;
+	margin: 5px 0;
+	display: block;
+	clear: both;
+}
+
+ul.pretty { margin: 0 0 1em 0; list-style: none; }
+ul.pretty li { padding: 0 0 0 20px; margin: 0 0 10px 0; }
+
+ul li ul { padding: .5em 0 0 .5em; }
+
+ul.horizontal  {
+	margin: 0; 
+	padding: 0; 
+	list-style: none;
+}
+
+ul.horizontal li { 
+	display: inline; 
+	margin: 0 10px 0 0;
+}
+
+/* Main blocks
+---------------------------------------- */
+
+#zoe { height: 100%; }
+
+#wrap {
+	padding: 0;
+	width: 1000px;
+	margin: 0 auto;
+	height: 100%;
+}
+
+#simple-wrap {
+	padding: 6px 10px;
+}
+
+#page-header { 
+	width: 1000px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+#page-header .ui-widget {
+	margin: 10px 10px 0 0;
+	text-align: right;
+}
+
+#mini-nav a { 
+	margin: 0 10px 0 0; 
+	text-decoration: none; 
+	font-size: .85em; 
+	font-family: Verdana;
+}
+#mini-nav a span { background-position: 0 0px; }
+
+#page-footer {
+	text-align: center;
+	margin: 1em 0;
+}
+
+#page-footer a { text-decoration: underline; }
+
+#page-logo {
+	float: left;
+}
+
+#page-logo .logo { margin-left: 20px; }
+
+.logo { 
+	border: 0px !important;
+	padding: 0;
+	max-width: 200px;
+	max-height: 160px;
+	overflow: hidden;
+}
+
+#page-quick-nav { height: 50px; margin: 0 0 20px 0; }
+
+#page-body {
+	margin: 0 auto 10px auto;
+	padding: 2px 2px 0 2px;
+	color: #000 !important;
+	background: #fff !important;
+	margin-bottom: 10px;
+}
+
+#dashboard {
+	padding: 0px 20px 20px 20px;
+}
+
+*+html body { padding-bottom: 20px; }
+
+#logo {
+	position: absolute;
+	top: 10px;
+	padding-left: 10px;
+	height: 80px;
+	overflow: hidden; 
+	width: 220px;
+}
+
+.clear {
+	display: block;
+	clear: both;
+	font-size: 1px;
+	line-height: 1px;
+	background: transparent;
+}
+
+a:link	{ color: #a9a9a9; text-decoration: underline;  }
+a:visited	{ color: #a9a9a9; text-decoration: underline;  }
+a:hover	{ color: #000; text-decoration: none; }
+a:active	{ color: #000; text-decoration: none; }
+
+* html table, * html select, * html input { font-size: 100%; }
+* html hr { margin: 4px 0; }
+
+.noborder, * .noborder, .ico a
+{ 
+	border: none !important; 
+	text-decoration: none !important;
+}
+
+.padding, .pad { padding: 10px; }
+.pad-light { padding: 4px; }
+
+.copyright {
+	text-align: left;
+	width: 960px;
+	color: #000;
+	font-size: 1em;
+	padding: 40px 0 10px 0;
+	margin: 0 auto -20px auto;
+}
+
+.copyright a { color: #353535; }
+.copyright a:hover { color: #000; }
+
+.terms { 
+	font-family: Courier; 
+	margin: 1em 0; 
+	font-size: 1.1em; 
+	padding: 10px; 
+	height: 150px !important; 
+	text-transform: uppercase; 
+	overflow-y: scroll; 
+}
+
+fieldset { border: none; padding: 0; margin: 0; }
+
+.left { float: left; width: 50%; }
+.right { float: left; width: 50%; }
+
+.row { clear: both; display: block; margin: 0 0 1em 0; }
+
+textarea { clear: both; width: 100% !important; min-height: 250px; }
+
+label { font-size: 1.2em; margin: 0 0 4px 0; padding: 0; display: block; font-family: Georgia; }
+
+label.lblcheckbox { font-size: 1em; margin: 0; display: block; font-family: "Trebuchet MS", Arial; }
+
+label.lblcheckbox input { width: 13px;
+    height: 13px;
+    padding: 0;
+    margin:0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+    *overflow: hidden;
+}
+
+label.error { 
+	color: red; 
+	font-family: "Trebuchet MS", Arial; 
+	padding: 4px 0 4px 24px; 
+	cursor: pointer; 
+	display: none; 
+	margin-left: 5px;
+	font-size: 13px !important;
+}
+
+#errors { display: none; }
+#errors label.error { padding: 2px 0 2px 24px; }
+
+label.error:hover { color: red; }
+
+#projectbox label.error { float: none !important; padding: 4px 0 4px 20px !important; font-size: 1.1em !important; display: block; }
+
+p.error { padding-left: 20px; color: red; }
+
+.hide { width: 0px; height: 0px; display: none; overflow: hidden; }
+
+/* spans inside h1, h2, h3 for icon links */
+
+.add-new { float: right; font-size: 11px !important; text-transform: uppercase; font-family: "Trebuchet MS", Arial !important; }
+
+#invoice th { font-weight: bold; padding-left: 10px; }
+#invoice td { padding-left: 10px; font-size: .9em;  }
+
+.pager { width: 100%; text-align: center; margin: 1em 0; }
+.pager .pagedisplay { width: auto; font-size: 11px; font-family: Verdana; text-align: center; }
+
+.datagrid { 
+	width: 100%;
+	border-collapse: collapse;
+	border: none !important;
+}
+
+.datagrid th, .datagrid td { padding: 8px; }
+
+.datagrid th {  
+	cursor: pointer;
+	text-align: left;
+	font-weight: bold;
+	background-image: none !important;
+}
+
+.datagrid td { 
+	text-align: left;
+	background-image: none !important;
+	vertical-align: top;
+}
+
+.datagrid .icon { text-align: center; }
+
+.progress-description {
+	position: absolute;
+	padding: 3px 0 0 3px;
+	font-family: Georgia;
+	font-size: .9em;
+}
+
+#tooltip {
+	position: absolute;
+	z-index: 3000;
+	opacity: 0.90;
+	max-width: 250px;
+	overflow: visible;
+	font-family: Verdana !important;
+	font-size: 11px !important;
+}
+
+*+html #tooltip, * html #tooltip { width: 250px; }
+
+/* Dashboard Menu */
+
+#dashboard-menu { 
+	float: right;
+	margin: 10px 15px -2px 0;
+	list-style: none;
+}
+
+#dashboard-menu li { 
+	float: left;
+	margin: 0 5px 0 0;
+	font-size: 1.2em;
+	font-family: Georgia, serif;
+}
+
+#dashboard-menu li#ui-selected { 
+	border-bottom: 0px !important; 
+}
+
+/* custom growl alerts */
+div#myalerts {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+.growl {
+	padding: 10px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background: #000;
+	border: 2px solid #555;
+	font-size: 11px !important;
+	color: #fff;
+	width: 250px;
+	opacity: 0.60; 
+	filter: alpha(opacity=60);
+	margin: 0 0 .5em 0;
+}
+
+.growl a, .growl a:visited { color: #ccc !important; }
+.growl a:hover, .growl a:visited:hover, .growl a:active { color: white !important; }
+
+.avatar img { height: 100px; width: auto; }
+.avatar-small img { height: 40px; width: auto; }

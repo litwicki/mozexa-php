@@ -1,0 +1,83 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript">
+$().ready(function(){
+	{section name=user loop=$userlist}
+		$("#delete-user-{$userlist[user].USER_ID}-form").ajaxForm({
+			dataType: 'json',
+			success: function(){
+				$('#delete-user-{$userlist[user].USER_ID}').dialog('close');
+				$("#user-{$userlist[user].USER_ID}").delay(1000).hide();
+			}
+		});
+	{/section}
+});
+</script>
+
+<div id="myusers" class="datalist">
+
+	<h3>{if $S_STAFF and $U_ADD_USER}<span style="float: right;"><a href="{$BASE_URL}/users.php?mode=add"><span class="user-add ico">New User</span></a></span>{/if}Dashboard Users</h3>
+	<p class="small">Complete list of all <em>users</em> within the {$DASHBOARD_NAME} Dashboard.</p>
+
+	<div class="ui-widget ui-widget-content ui-corner-all row">
+		<div class="ui-widget-content">
+		<table id="userlist" class="sortable datagrid" style="width: 100%;">
+		<thead>
+		<tr class="ui-widget-header">
+			<th style="width: 30px;"></th>
+			<th>User</th>
+			<th style="width: 200px;">Email</th>
+			<th style="width: 125px;">Phone</th>
+			
+			{if not $S_SETTINGS}
+			{*<th class="desc">User Companies</th>*}
+			<th class="icon" style="width:30px;"><span class="user-staff ico" title="Staff">&nbsp;</span></th>
+			<th class="icon" style="width:30px;"><span class="user-manager ico" title="Manager">&nbsp;</span></th>
+			<th class="icon" style="width:30px;"><span class="client ico" title="Client">&nbsp;</span></th>
+			{/if}
+		</tr>
+		</thead>
+		<tbody id="userlist-body">
+		{section name=user loop=$userlist}
+		<tr id="user-{$userlist[user].USER_ID}" class="ui-widget-content">
+			<td>
+				{if $USER_ID ne $userlist[user].USER_ID and ($S_ADMINISTRATOR or ($S_STAFF and $U_DELETE_USER))}
+				<span class="delete ico prompt" rel="#delete-user-{$userlist[user].USER_ID}">&nbsp;</span>
+				<div id="delete-user-{$userlist[user].USER_ID}" class="dialog" title="Delete {$userlist[user].USER_REALNAME}?">
+				<p>Are you sure you want to remove <strong>{$userlist[user].USER_REALNAME}</strong> from your dashboard?</p>
+				<form method="post" action="{$BASE_URL}/users.php" id="delete-user-{$userlist[user].USER_ID}-form">
+					<fieldset>
+					  <input type="hidden" name="user_id" value="{$userlist[user].USER_ID}" />
+					  <button type="submit" name="delete"><span class="approve">Confirm Delete</span></button>
+					  <a class="button" onclick="$('#delete-user-{$userlist[user].USER_ID}').dialog('close');"><span class="close ico">Cancel</span></a>
+					</fieldset>
+				</form>
+				</div>
+				{/if}
+			</td>
+			<td><a class="noborder" href="{$BASE_URL}/users.php?id={$userlist[user].USER_ID}"><span class="{$userlist[user].GENDER_ICO} ico">{$userlist[user].USER_REALNAME}</span></a>
+			</td>
+			<td><a class="noborder" href="mailto:{$userlist[user].USER_EMAIL}"><span class="email ico">{$userlist[user].USER_EMAIL}</span></a></td>
+			<td>{$userlist[user].USER_PHONE}</td>
+			
+			{if not $S_SETTINGS}
+			{*<td class="desc">{$userlist[user].USER_CLIENTS}</td>*}
+			<td class="icon">{if $userlist[user].S_STAFF}<span class="approve ico">&nbsp;</span>{/if}</td>
+			<td class="icon">{if $userlist[user].S_MANAGER}<span class="approve ico">&nbsp;</span>{/if}</td>
+			<td class="icon">{if $userlist[user].S_CLIENT}<span class="approve ico">&nbsp;</span>{/if}</td>
+			{/if}
+		</tr>
+		{/section}
+		</tbody>
+		</table>
+		</div>
+	</div>
+
+	{include file="template/pagination.html"}
+	
+	
+</div>

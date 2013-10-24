@@ -1,0 +1,95 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+{if $debug}{debug}{/if}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-gb" xml:lang="en-gb">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-language" content="en-gb" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta name="copyright" content="Copyright (c) 2009,2010 Litwicki Media LLC - www.litwickimedia.com" />
+<meta name="keywords" content="dashboard, project management, php project, basecamp alternative, salesforce alternative, client management, CRM, collaborate, web based project management" />
+<meta name="description" content="Dashboard43 is a project/client management tool used for creative professionals and their clients to collaborate on projects." />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+<title>{$DASHBOARD_NAME} - {$PAGE_TITLE}</title>
+
+<link rel="shortcut icon" type="image/ico" href="{$BASE_URL}/favicon.ico" />
+<link href="{$BASE_URL}/css.php" rel="stylesheet" type="text/css" media="all" />
+{if $S_PRINT}<link href="{$BASE_URL}/css/print.css" rel="stylesheet" type="text/css" media="all" />{/if}
+
+<script type="text/javascript" src="{$BASE_URL}/js/jquery.js"></script>
+<script type="text/javascript" src="{$BASE_URL}/js/jquery-ui.js"></script>
+<script type="text/javascript" src="{$BASE_URL}/js/tiny_mce/jquery.tinymce.js"></script>
+<script type="text/javascript" src="{$BASE_URL}/js/mozexa.js"></script>
+
+{if $SHOW_DASHBOARD_ALERTS}
+<script type="text/javascript"> 
+$().ready(function(){
+	{* pull all growl divs into a nifty growl container like OSX *}
+	var i=0
+	$('.growl').each(function(){
+		$(this).delay(++i*500).fadeIn('slow');
+	});
+
+	{section name=alert loop=$alertrow}
+	
+	$('#growl-{$alertrow[alert].ALERT_ID}').ajaxForm(function() {
+		$('#alert-{$alertrow[alert].ALERT_ID}').fadeOut("slow");
+		return false;
+	}); 
+	
+	{/section}
+});
+</script>
+{/if}
+
+</head>
+
+<body{if $S_LOGIN_PAGE} id="login_page"{/if}>
+
+<div id="zoe">
+
+	{if not $S_LOGIN_PAGE}
+	<div id="page-header">
+		
+		<div id="logo">
+			<a href="{$BASE_URL}/"><img alt="{$DASHBOARD_NAME}" src="{$LOGO_FILE}" class="logo" /></a>
+		</div>
+		
+		<div id="mini-nav" class="ui-widget pad row">
+			<a href="{$BASE_URL}/"><span class="home ico">Home</span></a>
+			{if $S_ADMINISTRATOR}<a href="{$BASE_URL}/settings.php"><span class="config ico">Control Panel</span></a>{/if}
+			<a href="{$BASE_URL}/users.php?id={$USER_ID}"><span class="{$USER_GENDER_ICON} ico">My Profile</span></a>
+			<a href="auth.php?logout=true" accesskey="l"><span class="logout ico">Logout [{$USER_REALNAME}]</span></a>
+		</div>
+
+		<div style="clear: both;"></div>
+
+		<ul id="dashboard-menu" class="ui-reset ui-clearfix ui-component">
+		
+			<li{if $S_PROJECT} id="ui-selected"{/if} class="{if $S_PROJECT}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/projects.php"><span class="projects ico">Projects</span></a></li>
+			<li{if $S_TASK} id="ui-selected"{/if} class="{if $S_TASK}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/tasks.php"><span class="tasks ico">Tasks</span></a></li>
+			<li{if $S_MESSAGE} id="ui-selected"{/if} class="{if $S_MESSAGE}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/messages.php"><span class="messages ico">Messages</span></a></li>
+			<li{if $S_PROPOSAL} id="ui-selected"{/if} class="{if $S_PROPOSAL}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/proposals.php"><span class="proposals ico">Proposals</span></a></li>
+			<li{if $S_FILE} id="ui-selected"{/if} class="{if $S_FILE}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/files.php"><span class="files ico">Files</span></a></li>
+			
+			{if ($S_STAFF and ($U_EDIT_INVOICE or $U_ADD_INVOICE)) or $S_ADMINISTRATOR}
+			<li{if $S_INVOICE} id="ui-selected"{/if} class="{if $S_INVOICE}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/invoices.php"><span class="invoices ico">Invoices</span></a></li>
+			{/if}
+			
+			<li{if $S_CLIENT} id="ui-selected"{/if} class="{if $S_CLIENT}ui-state-active{else}ui-state-default{/if} ui-corner-top pad"><a href="{$BASE_URL}/clients.php"><span class="clients ico">Clients</span></a></li>
+
+		</ul>
+	</div>
+	{/if}
+	
+	<div id="wrap" class="ui-helper-reset">
+	
+		<div id="page-body" class="ui-helper-reset ui-widget-content ui-corner-all">

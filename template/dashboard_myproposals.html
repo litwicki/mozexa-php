@@ -1,0 +1,54 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_myproposals.html 41 2010-06-04 16:56:54Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div id="proposals">
+
+	<h3>{if $S_STAFF and $U_ADD_PROPOSAL}<span style="float: right;"><a href="{$BASE_URL}/proposals.php?mode=add"><span class="proposal-add ico">New Proposal</span></a></span>{/if}My Proposals&nbsp;({$PROPOSAL_COUNT})</h3>
+	<p class="small">{if $S_STAFF}Proposals for active projects.{else}Proposal(s) for my project(s).{/if}</p>
+
+	{if $SHOW_PROPOSAL_LIST}
+	<div class="datalist">
+		<div class="ui-widget ui-widget-content ui-corner-all">
+			<div class="ui-widget-content">
+			<table id="proposallist" class="datagrid sortable">
+			<tr class="ui-widget-header">
+				<th>Title</th>
+				<th style="width: 125px;">Date Posted</th>
+				<th style="width: 30px;">Status</th>
+			</tr>
+			{section name=proposal loop=$proposalrow}
+			<tr class="ui-widget-content">
+				<td class="desc">
+					<strong><a href="{$BASE_URL}/proposals.php?id={$proposalrow[proposal].PROPOSAL_ID}"><span class="proposal-open ico">{$proposalrow[proposal].SUBJECT}</span></a></strong>
+					<br /><a class="small" href="{$BASE_URL}/projects.php?id={$proposalrow[proposal].PROJECT_ID}"><span class="project-open ico">{$proposalrow[proposal].PROJECT_NAME}</span></a>
+				</td>
+				<td class="date">{$proposalrow[proposal].POST_DATE}</td>
+				<td class="icon">
+					{if $proposalrow[proposal].PROPOSAL_STATUS eq 1}<span title="Pending as of {$proposalrow[proposal].STATUS_DATE}" class="hourglass ico">
+					{elseif $proposalrow[proposal].PROPOSAL_STATUS eq 2}<span title="Approved {$proposalrow[proposal].STATUS_DATE}" class="approve ico">
+					{elseif $proposalrow[proposal].PROPOSAL_STATUS eq 0}<span title="Declined {$proposalrow[proposal].STATUS_DATE}!" class="alert ico">
+					{else}<span class="help ico">
+					{/if}&nbsp;</span>
+				</td>
+			</tr>
+			{/section}
+			</table>
+			</div>
+		</div>
+	</div>
+	
+	{include file="template/pagination.html"}
+	
+	
+	{else}
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="soft-error ico">{$NO_PROPOSALS}</span>
+		</div>
+	</div>
+	{/if}
+		
+</div>

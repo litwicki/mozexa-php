@@ -1,0 +1,11 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<select class="radiodropdown" name="project_id" id="project_id" validate="required:true,min:1" title="Please select a project.">
+	{section name=project loop=$projectlist}
+		<option id="option-{$projectlist[project].PROJECT_ID}"{if $projectlist[project].SELECTED_PROJECT or $PROJECT_ID gt 0} selected="selected"{/if} value="{$projectlist[project].PROJECT_ID}">{$projectlist[project].PROJECT_NAME}</option>
+	{/section}
+</select>

@@ -1,0 +1,41 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+
+<div id="attachbox" class="datalist">
+	<div class="ui-widget ui-widget-content ui-corner-all">
+		<div class="ui-widget-content">
+			<table id="filelist" class="datagrid">
+			<tr class="ui-widget-header">
+				{if $SHOW_FORM}<th style="width: 30px;"></th>{/if}
+				<th>Filename</th>
+				<th style="width: 50px;">Type</th>
+				<th style="width: 50px;">Filesize</th>
+				<th style="width: 125px;">Date</th>
+			</tr>
+			{section name=attachment loop=$attachrow}
+			<tr class="ui-widget-content" id="attachment{$attachrow[attachment].ATTACHMENT_ID}">
+				{if $SHOW_FORM}
+				<td class="icon">
+					<form method="post" action="{$BASE_URL}/attachments.php" id="removeattach{$attachrow[attachment].ATTACHMENT_ID}">
+					<input type="hidden" name="attachment_id" value="{$attachrow[attachment].ATTACHMENT_ID}" />
+					<input type="hidden" name="message_id" value="{$MESSAGE_ID}" />
+					<input type="submit" name="remove_file" class="delete ico" value="" />
+					</form>
+				</td>
+				{/if}
+				<td class="icon">
+					<a title="Download {$attachrow[attachment].FILENAME}" href="{$attachrow[attachment].FILELINK}"><span class="save ico">{$attachrow[attachment].FILENAME}</span></a>
+				</td>
+				<td class="num" style="text-align; center;">{$attachrow[attachment].FILE_EXT}</td>
+				<td class="num">{$attachrow[attachment].FILESIZE}</td>
+				<td class="date">{$attachrow[attachment].DATE_ADDED}</td>
+			</tr>
+			{/section}
+			</table>
+		</div>
+	</div>
+</div>

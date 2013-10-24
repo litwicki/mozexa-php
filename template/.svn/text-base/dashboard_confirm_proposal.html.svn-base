@@ -1,0 +1,11 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<p>By approving this proposal ("{$SUBJECT}"), I understand and accept the terms and associated liability of cost for project ("{$PROJECT_NAME}").</p>
+
+<p>Additionally, I accept that the contents of the work completed within this project ("PROJECT") will remain the sole property of Litwicki Media LLC until the balance as agreed upon within this proposal is paid in full.</p>
+
+<p>On behalf of {$COMPANY}, I ({$USER_REALNAME}) accept this proposal in its entirety.</p>

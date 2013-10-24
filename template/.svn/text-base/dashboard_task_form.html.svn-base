@@ -1,0 +1,101 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+{if ($SHOW_FORM and $S_STAFF and ($U_ADD_TASK or $U_EDIT_TASK)) or $S_ADMINISTRATOR}
+<script type="text/javascript" src="{$BASE_URL}/js/tasks/task_form.js"></script>
+
+<h1>{if $PROJECT_ID}{$PROJECT_NAME}: {/if}{$FORM_NAME}</h1>
+
+<div class="ui-widget" id="complete" style="display: none;">
+	<div class="ui-state-highlight ui-corner-all pad"> 
+		<span id="task-success"></span>
+	</div>
+</div>
+
+<div class="form" id="taskbox">
+
+	<div class="padding">
+
+	{if $SHOW_TASK_FORM}
+	<form method="post" id="taskform" action="tasks.php">
+		<fieldset>
+		<input type="hidden" name="task_id" value="{$TASK_ID}" />
+
+		<div class="row">
+		
+			<div class="left">
+				<div class="row">
+					<label for="task_name">Task Name</label>
+					<input class="ui-input" type="text" name="task_name" id="task_name" value="{$TASK_NAME}" 
+						title="Please enter a task name with at least 10 characters." validate="required:true,minlength:5" />
+				</div>
+
+				<div class="row">
+					<label for="due_date">Date Due</label>
+					<input class="ui-input inline-date-pick" type="text" name="due_date" id="due_date" title="Please select the task due date." readonly="readonly" value="{$DUE_DATE}"
+						title="Task due date must be selected." validate="required:true" />
+				</div>
+
+				{* Do not allow a user to change what project this task is for *}
+				{if not $SHOW_DETAIL and not $PROJECT_ID}
+				<div class="row">
+					<label>{$COMPANY_NAME} Projects</label>
+					{include file="template/dashboard_ddl_projects.html"}
+				</div>
+				{/if}
+				
+				<div style="clear: both;"></div>
+				
+				<div class="row">
+					<label>Assigned Users</label>
+					<select name="selected_users[]" id="selected_users" class="multiselect" multiple="multiple" size="5" validate="required:true,minlength:1" title="Must assign at least one user!">
+						{section name=user loop=$userlist}
+						<option value="{$userlist[user].USER_ID}"{if $userlist[user].ASSIGNED} selected="selected"{/if}>{$userlist[user].USER_REALNAME}</option>
+						{/section}
+					</select>
+				</div>
+			</div>
+			
+			<div class="right">
+				<div id="errors"></div>
+			</div>
+			
+		</div>
+		
+		<div class="row">
+			<div class="row">
+				<label for="task_description">Task Details</label>
+			</div>
+			<textarea name="task_description" id="task_description" class="wysiwyg" rows="1" cols="1">{$TASK_DESCRIPTION}</textarea>
+		</div>
+
+		<div class="row">
+			<button type="submit" name="save" id="save">
+				<span class="save">Save Task</span>
+			</button>
+			<button type="button" onclick="history.go(-1);">
+				<span class="delete">Cancel</span>
+			</button>
+		</div>
+		</fieldset>
+	</form>
+	{else}
+		<div class="ui-widget">
+			<div class="ui-state-error ui-corner-all padding"> 
+				<span style="float: right;"><a class="noborder" href="javascript:history.go(-1);">Go Back&nbsp;<span class="arrow ico">&nbsp;</span></a></span>
+				<span class="alert ico">"{$TASK_NAME}" is part of a completed project and cannot be modified!</span>
+			</div>
+		</div>
+	{/if}
+	</div>
+</div>
+	
+{else}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error ico">&nbsp;</span>{$FORM_ERROR}
+	</div>
+</div>
+{/if}

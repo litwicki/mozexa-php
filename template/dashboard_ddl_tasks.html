@@ -1,0 +1,17 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_ddl_tasks.html 7 2010-04-23 16:35:57Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div class="row">
+	<label for="task_id">Task</label>
+	<div class="input_text" style="width: 300px;"><div></div>
+		<select class="ui-select" name="task_id" id="task_id" title="Please select the task this message pertains to.">
+			<option value="0">Select a Task</option>
+			{section name=task loop=$tasklist}
+			<option {if $tasklist[task].$SELECTED_TASK}selected="selected"{/if} value="{$tasklist[task].TASK_ID}">{$tasklist[task].TASK_NAME}</option>
+			{/section}
+		</select>
+	</div>
+</div>

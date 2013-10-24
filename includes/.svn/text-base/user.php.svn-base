@@ -1,0 +1,247 @@
+<?php
+
+if (!defined('MY_DASHBOARD'))
+{
+	exit;
+}
+
+/****
+ *
+ *  @author: jake@litwickimedia.com
+ *  @SVN: $Id$
+ *  @Copyright 2009,2010 Litwicki Media LLC
+ *
+ ***/ 
+
+class user
+{
+	var $data = array();
+	var $browser = '';
+	var $host = '';
+	var $session_id = '';
+	var $ip = '';
+
+	function setup()
+	{
+		global $db, $template, $config;
+
+		if( isset($_COOKIE[$config['cookie_name']]) )
+		{
+			//take user's session_id to get his/her user_id
+			$session_id = $_COOKIE[$config['cookie_name']];
+			$sql = "SELECT session_user_id FROM ".SESSIONS_TABLE." WHERE session_id='$session_id'";
+			$result = $db->sql_query($sql);
+			$row = $db->sql_fetchrow($result);
+			
+			$user_id = (int) $row['session_user_id'];
+			
+			//build array of user data
+			$sql = "SELECT * FROM ".USERS_TABLE." u, ".SESSIONS_TABLE." s WHERE s.session_id='$session_id' AND u.user_id=$user_id";
+			$result = $db->sql_query($sql);
+			$this->data = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+		}
+		else
+		{
+			$this->data['user_id'] = 'ANONYMOUS';
+		}
+
+		$this->session_cleanup();
+		
+		return true;
+	}
+	
+	function login_attempts($username)
+	{
+		global $db;
+		
+		$username = $db->sql_escape($username);
+		
+		$sql = "UPDATE ".USERS_TABLE." SET user_login_attempts=user_login_attempts+1 WHERE user_email='$username'";
+		$db->sql_query($sql);
+		
+		return true;
+	}
+
+	function session_create($user_row, $cookie_expire)
+	{
+		global $db, $config;
+
+		$user_id = (int) $user_row['user_id'];
+		
+		//update user's lastvisit
+		$sql = 'UPDATE '.USERS_TABLE.' SET user_login_attempts=0, user_lastvisit=' . (isset($this->data['session_time']) ? $this->data['session_time'] : time()) . ' WHERE user_id=' . $user_id;
+		$db->sql_query($sql);
+
+		$session_id = md5(unique_id());
+		setcookie($config['cookie_name'] , $session_id, $cookie_expire, '/', $config['cookie_domain']);
+		
+		//log the session
+		$session_row = array(
+			'session_id'			=>	(string) $db->sql_escape($session_id),
+			'session_user_id'		=>	$user_id,
+			'session_last_visit'	=>	isset($this->data['session_time']) ? $this->data['session_time'] : time(),
+			'session_start'			=>	(int) time(),
+			'session_time'			=>	(int) time() + 300,
+			'session_ip'			=>	(string) (!empty($_SERVER['REMOTE_ADDR'])) ? htmlspecialchars($_SERVER['REMOTE_ADDR']) : '',
+			'session_browser'		=>	(string) (!empty($_SERVER['HTTP_USER_AGENT'])) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT']) : '',
+		);
+
+		$sql = 'INSERT INTO '.SESSIONS_TABLE.' ' . $db->sql_build_array('INSERT', $session_row);
+		$db->sql_query($sql);
+
+		return true;
+	}
+
+	function session_kill($user_row)
+	{
+		global $db, $config;
+		
+		$session_id = $_COOKIE[$config['cookie_name']];
+		$session_id = $db->sql_escape($session_id);
+		
+		//remove the session from the db
+		$sql = "DELETE FROM ".SESSIONS_TABLE." WHERE session_id='$session_id'";
+		$db->sql_query($sql);
+		
+		//destroy the auth cookie
+		setcookie($config['cookie_name'], $session_id, time() - 3600, '/', $config['cookie_domain']);
+		
+		return true;
+	}
+	
+	function add_new($user_row, $group_row)
+	{
+		global $db, $config;
+		
+		$sql = 'INSERT INTO '.USERS_TABLE.' ' . $db->sql_build_array('INSERT', $user_row);
+		$result = $db->sql_query($sql);
+		$user_id = $db->sql_nextid();
+
+		return $user_id;
+	}
+	
+	function modify($user_id, $user_row)
+	{
+		global $db;
+		
+		if( empty($user_row) )
+		{
+			return false;
+		}
+		
+		$sql = 'UPDATE ' . USERS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $user_row) . ' WHERE user_id = ' . (int) $user_id;
+		$db->sql_query($sql);
+		
+		$user_row = $this->detail($user_id);
+		return $user_row;
+	}
+	
+	function grouplist($user_id = false)
+	{
+		global $db, $template;
+		
+		$user_id = (int) $user_id;	
+		$user_groups = $this->mygroups($user_id);
+		
+		$sql = "SELECT group_id, group_name FROM ".GROUPS_TABLE." WHERE group_name <> 'ADMINISTRATOR' ORDER BY group_name";
+					
+		$result = $db->sql_query($sql);
+		
+		while( $row = $db->sql_fetchrow($result) )
+		{
+			$selected = in_array($row['group_name'], $user_groups) ? true : false;
+			
+			$group = array(
+				'GROUP_ID'			=>	$row['group_id'],
+				'GROUP_NAME'		=>	ucwords($row['group_name']),
+				'GROUP_MEMBER'		=>	$selected,
+				'GROUP_ICO'			=>	'user-' . strtolower($row['group_name']),
+			);
+			
+			$group_row[] = $group;
+		}
+
+		$template->assign('grouprow', $group_row);
+		
+		return $group_row;
+		
+	}
+	
+	function mygroups($user_id)
+	{
+		global $db;
+		
+		$sql = "SELECT * FROM ".GROUPS_TABLE." g JOIN ".USER_GROUP_TABLE." ug ON ug.group_id=g.group_id WHERE ug.user_id=$user_id";
+		$result = $db->sql_query($sql);
+		while( $row = $db->sql_fetchrow($result) )
+		{
+			$groups_array[$row['group_id']] = $row['group_name'];
+		}
+		
+		return $groups_array;
+		
+	}
+
+	function detail($user_id)
+	{
+		global $db;
+		
+		$sql = "SELECT user_email, user_realname AS Name, user_sms, user_aim AS AIM, user_phone FROM ".USERS_TABLE." WHERE user_id=$user_id";
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		
+		return $row;
+	}
+	
+	function group_assign($user_id, $selected_groups)
+	{
+		global $db;
+
+		$current_groups = $this->mygroups($user_id);
+		
+		foreach($selected_groups as $group_id)
+		{
+			//if the user does not currently have this group, add it
+			if( !array_key_exists($group_id, $current_groups) )
+			{
+				$db->sql_query("INSERT INTO ".USER_GROUP_TABLE." (user_id, group_id) VALUES ($user_id, $group_id)");
+			}
+		}
+		
+		foreach($current_groups as $group_id => $group_name)
+		{
+			//if the group is NOT selected, but is currently assigned, remove it
+			if( !in_array($group_id, $selected_groups) )
+			{
+				//NEVER REMOVE ADMINS!
+				if($group_id > 1)
+				{
+					$db->sql_query("DELETE FROM ".USER_GROUP_TABLE." WHERE user_id=$user_id AND group_id=$group_id");
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	//delete user sessions that are older than one week
+	function session_cleanup()
+	{
+		global $db, $user, $config;
+		
+		$session_length = $config['session_length'];
+		
+		$user_id = (int) $user->data['user_id'];
+		$one_week = strtotime("-$session_length days");
+		
+		$sql = "DELETE FROM ".SESSIONS_TABLE." WHERE session_user_id = $user_id AND session_start < $session_length";
+		$db->sql_query($sql);
+		
+		return true;
+		
+	}
+	
+}
+
+?>

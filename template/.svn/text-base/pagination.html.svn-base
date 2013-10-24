@@ -1,0 +1,27 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: overall_header.html 31 2010-05-24 03:15:38Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div class="pager">
+	<form action="">
+		<fieldset>
+			
+			<span style="float:right;">Items Per Page: <select class="pagesize">
+				<option selected="selected" value="10">10</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+			</select></span>
+			
+			<img alt="first" src="/images/icons/fugue/arrow-skip-180.png" class="first" />
+			<img alt="prev" src="/images/icons/fugue/arrow-180-medium.png" class="prev"/>
+
+			<input class="pagedisplay" />
+
+			<img alt="next" src="/images/icons/fugue/arrow-000-medium.png" class="next"/>
+			<img alt="last" src="/images/icons/fugue/arrow-skip.png" class="last"/>
+
+		</fieldset>
+	</form>
+</div>

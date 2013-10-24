@@ -1,0 +1,135 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript" src="{$BASE_URL}/js/clients/client_details.js"></script>
+
+<h1>{$COMPANY}</h1>
+
+<div id="client-{$CLIENT_ID}">
+	<div class="left">
+		<h3>Company Details</h3>
+		
+		<div class="ui-widget ui-widget-content ui-corner-all pad-light" style="width: 90%;">
+			<table class="datagrid">
+				<tr class="ui-state-active">
+					<th>Name</th>
+					<td><strong>{$COMPANY}</strong></td>
+				</tr>
+				<tr class="ui-state-active">
+					<th>Phone</th>
+					<td>{if $PHONE eq ''}*{else}{$PHONE}{/if}</td>
+				</tr>
+				<tr class="ui-state-active">
+					<th>Address</th>
+					<td>{if $ADDRESS eq ''}*{else}{$ADDRESS}{/if}</td>
+				</tr>
+				<tr class="ui-state-active">
+					<th>City</th>
+					<td>{if $CITY eq ''}*{else}{$CITY}{/if}</td>
+				</tr>
+				<tr class="ui-state-active">
+					<th>State</th>
+					<td>{if $STATE eq ''}*{else}{$STATE}{/if}</td>
+				</tr>
+				<tr class="ui-state-active">
+					<th>Zip</th>
+					<td>{if $ZIPCODE eq ''}*{else}{$ZIPCODE}{/if}</td>
+				</tr>
+				<tr class="ui-state-active">
+					<th>Website</th>
+					<td>{if $WEBSITE eq ''}*{else}{$WEBSITE}{/if}</td>
+				</tr>
+			</table>
+		</div>
+		
+	</div>
+	
+	<div class="right">
+		<h3>Company Users</h3>
+		<p>Users with access to projects for {$COMPANY}.</p>
+		
+		<ul class="pretty">
+		{section name=client loop="$clientuser"}
+		<li class="{if $clientuser[client].SUPER eq 1}star{else}{$clientuser[client].GENDER_ICO}{/if}">
+			<a href="{$BASE_URL}/users.php?id={$clientuser[client].USER_ID}">{$clientuser[client].USER_REALNAME}</a>&nbsp;
+			{if $S_ADMINISTRATOR or ($S_STAFF and $U_EDIT_CLIENT) or $S_CLIENT_SUPER}
+			[ <a href="javascript:;" class="delete-clientuser prompt" rel="#confirm-{$clientuser[client].USER_ID}">remove</a> {if $S_STAFF}| <a href="javascript:;" class="prompt" rel="#admin-{$clientuser[client].USER_ID}">admin</a> {/if}]
+			{/if}
+		</li>
+		{sectionelse}
+			<li class="soft-error">There are no users for {$COMPANY}</li>
+		{/section}
+		</ul>
+		
+		{if $smarty.section.client.loop gt 0}
+		<hr />
+		<span class="star ico">denotes the client administrator user.</span>
+		{/if}
+		
+		{if $S_ADMINISTRATOR or ($S_STAFF and $U_EDIT_CLIENT) or $S_CLIENT_SUPER}
+		{section name=client loop="$clientuser"}
+		<div id="confirm-{$clientuser[client].USER_ID}" class="dialog" title="Remove {$clientuser[client].USER_REALNAME}?">
+			<form method="post" action="{$BASE_URL}/clients.php" id="delete-{$clientuser[client].USER_ID}">
+			  <fieldset>
+				<input type="hidden" name="client_user_id" id="client_user_id" value="{$clientuser[client].USER_ID}" />
+				<input type="hidden" name="client_id" value="{$clientuser[client].CLIENT_ID}" />
+				<input type="hidden" name="deleteuser" value="1" />	
+				<p>Are you sure you want to remove <em>{$clientuser[client].USER_REALNAME}</em> as an authorized user for <em>{$COMPANY}</em>? This will remove <strong>all</strong> access to projects linked to {$COMPANY}.</p>
+				<button type="submit" name="deleteuser">
+					<span class="approve">Confirm Delete</span>
+				</button>
+				<a class="button" onclick="$('#confirm-{$clientuser[client].USER_ID}').dialog('close');"><span class="close ico">Cancel</span></a>
+			  </fieldset>
+			</form>
+		</div>
+		
+		<div id="admin-{$clientuser[client].USER_ID}" class="dialog" title="Make {$clientuser[client].USER_REALNAME} company administrator?">
+			<form method="post" action="{$BASE_URL}/clients.php" id="makeadmin-{$clientuser[client].USER_ID}">
+			  <fieldset>
+				<input type="hidden" name="client_user_id" id="client_user_id" value="{$clientuser[client].USER_ID}" />
+				<input type="hidden" name="client_id" value="{$clientuser[client].CLIENT_ID}" />
+				<p>Are you sure you want to make <em>{$clientuser[client].USER_REALNAME}</em> the company administrator for <em>{$COMPANY}</em>? This will overwrite the current administrator.</p>
+				<button type="submit" name="makeadmin">
+					<span class="approve">Confirm</span>
+				</button>
+				<a class="button" onclick="$('#admin-{$clientuser[client].USER_ID}').dialog('close');"><span class="close ico">Cancel</span></a>
+			  </fieldset>
+			</form>
+		</div>
+		{/section}
+
+		{/if}
+		{if $S_ADMINISTRATOR or ($S_STAFF and $U_EDIT_CLIENT) or $S_CLIENT_SUPER}
+		<h3>Add User</h3>
+		<p>Enter the user's name to add them to {$COMPANY}'s allowed users.</p>
+		
+		<form method="post" action="{$BASE_URL}/clients.php" id="addclientuser">
+		  <fieldset>
+			
+			<input type="hidden" name="client_id" value="{$CLIENT_ID}" />
+			<input type="hidden" name="user_id" id="add_user_id" value="" />
+			
+			<div class="row">
+				<label for="client_users">User Name</label>
+				<input type="text" name="client_user" id="client_user" class="ui-input" />
+			</div>
+			
+			<div class="row">
+				<button type="submit" name="adduser" id="adduser" style="display:none;"><span class="user-add ico">Add User</span></button>
+			</div>
+			
+		  </fieldset>
+		</form>
+		{/if}
+		
+	</div>
+	
+</div>
+
+<div style="clear: both;"></div>
+
+{include file="template/dashboard_myprojects.html"}
+{include file="template/dashboard_myinvoices.html"}

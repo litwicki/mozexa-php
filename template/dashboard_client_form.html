@@ -1,0 +1,83 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_client_form.html 41 2010-06-04 16:56:54Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{if $SHOW_FORM and (($S_STAFF and ($U_ADD_CLIENT or $U_EDIT_CLIENT)) or $S_ADMINISTRATOR or $S_SUPER_USER)}
+<script type="text/javascript" src="{$BASE_URL}/js/clients/client_form.js"></script>
+
+<h1>{$FORM_NAME}</h1>
+
+<div class="ui-widget row" id="success" style="display: none;">
+	<div class="ui-state-highlight ui-corner-all pad"> 
+		<span class="approve ico">&nbsp;</span><span id="company_name"></span> saved successfully! You will be redirected in 5 seconds.
+	</div>
+</div>
+		
+
+<div id="client-form-wrapper">
+	
+	<form method="post" id="clientform" action="clients.php">
+		<fieldset>
+		
+		<input type="hidden" name="client_id" value="{$CLIENT_ID}" />
+		
+		<div class="row">
+			<label for="client_name">Company/Organization Name</label>
+			<input class="ui-input" type="text" name="client_name" id="client_name" value="{$COMPANY}" title="Company name is required" validate="required:true" />
+
+		</div>
+
+		<div class="row">
+			<label for="client_phone">Phone Number</label>
+			<input class="ui-input" type="text" name="client_phone" id="client_phone" value="{$PHONE}" title="Invalid phone number" validate="phone:true" />
+		</div>
+		
+		<div class="row">
+			<label for="client_address">Address</label>
+			<input class="ui-input" type="text" name="client_address" value="{$ADDRESS}" title="Address is required" validate="required:true" id="client_address" />
+		</div>
+
+		<div class="row">
+			<label for="client_city">City</label>
+			<input class="ui-input" type="text" name="client_city" value="{$CITY}" title="City is required" validate="required:true" id="client_city" />
+		</div>
+
+		<div class="row">
+			{include file="template/dashboard_ddl_states.html"}
+		</div>
+
+		<div class="row">
+			<label for="client_zipcode">Zip</label>
+			<input class="ui-input" type="text" name="client_zipcode" id="client_zipcode" value="{$ZIPCODE}" title="Invalid zipcode" validate="min:11111,max:99999" />
+		</div>
+		
+		<div class="row">
+			<label for="client_website">Website</label>
+			<input class="ui-input" type="text" name="client_website" id="client_website" value="{$WEBSITE}" title="Invalid website url" validate="url:true" />
+		</div>
+
+		<div id="errors" class="row"></div>
+		
+		<div class="row buttons">
+			
+			<button type="submit" name="saveclient" id="saveclient">
+				<span class="save">Save Client</span>
+			</button>
+			
+			<a class="button" href="javascript:history.go(-1);"><span class="close ico">Cancel</span></a>
+			
+		</div>
+		
+		</fieldset>
+	</form>
+</div>
+
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="alert ico">{$FORM_ERROR}</span>
+	</div>
+</div>
+{/if}

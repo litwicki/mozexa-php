@@ -1,0 +1,67 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div id="tasks">
+
+	<h3>{if ($S_STAFF and $U_ADD_TASK) or $S_ADMINISTRATOR}<span style="float: right;"><a href="{$BASE_URL}/tasks.php?mode=add{if $S_PROJECT}&amp;p={$PROJECT_ID}{/if}"><span class="task-add ico">New Task</span></a></span>{/if}My Tasks&nbsp;({$TASK_COUNT})</h3>
+	<p class="small">
+	{if $S_STAFF}Complete list of task assignments for {$USER_REALNAME}.{else}All tasks associated with my project(s).{/if}
+	</p>
+
+	{if $SHOW_TASKLIST}
+	{if $S_ADMINISTRATOR or $S_MANAGER}<p class="approve ico">Tasks I am assigned to.</p>{/if}
+	<div class="datalist">
+		<div class="ui-widget ui-widget-content ui-corner-all row">
+		   <div class="ui-widget-content">
+				<table id="tasklist" class="datagrid sortable">
+				<thead>
+					<tr class="ui-widget-header">
+						{if  $S_MANAGER or $S_ADMINISTRATOR}<th style="width: 30px;">&nbsp;</th>{/if}
+						<th>Task Name</th>
+						<th style="width: 100px;">Status</th>
+						<th style="width: 100px;">Deadline</th>
+						<th style="width: 50px;">Hours</th>
+					</tr>
+				</thead>
+				<tbody>
+					{section name=task loop=$taskrow}
+					<tr class="ui-widget-content">
+						{if  $S_MANAGER or $S_ADMINISTRATOR}<td style="text-align:center;">{if $taskrow[task].ASSIGNED}<span class="approve ico">&nbsp;</span>{/if}</td>{/if}
+						<td class="desc">
+							<strong><a href="{$BASE_URL}/tasks.php?id={$taskrow[task].TASK_ID}">
+							  <span class="task-open ico" title="View {$taskrow[task].TASK_NAME} details">{$taskrow[task].TASK_NAME}</span>
+							</a></strong>
+							{if not $S_PROJECT}<br /><a class="small" href="{$BASE_URL}/projects.php?id={$taskrow[task].PROJECT_ID}"><span class="project-open ico">{$taskrow[task].PROJECT_NAME}</span></a>{/if}
+						</td>
+						<td><span class="ico 
+							{if $taskrow[task].TASK_STATUS eq 1}wrench">Active
+							{elseif $taskrow[task].TASK_STATUS eq 2}approve">Complete
+							{elseif $taskrow[task].TASK_STATUS eq 3}cancel">Closed
+							{else}error">Error!
+							{/if}</span>
+						</td>
+						<td>{$taskrow[task].DUE_DATE}</td>
+						<td style="text-align:center;">{$taskrow[task].TASK_HOURS}</td>
+					</tr>
+					{/section}
+				</tbody>
+				</table>
+			</div>
+		</div>
+		
+		{include file="template/pagination.html"}
+	
+		
+	</div>
+	{else}
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="soft-error ico">{$NO_TASKS}</span>
+		</div>
+	</div>
+	{/if}
+
+</div>

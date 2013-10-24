@@ -1,0 +1,268 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+{if $INVOICE_ERROR eq ''}
+<h1>{$COMPANY} Invoice #{$INVOICE_UNIQUE_ID}</h1>
+
+<ul class="pretty" style="float:right;">
+	<li><strong>{$COMPANY_NAME}</strong></li>
+	<li>{$COMPANY_ADDRESS}</li>
+	<li>{$COMPANY_CITY}, {$COMPANY_STATE} {$COMPANY_ZIP}</li>
+</ul>
+
+<ul class="pretty">
+	<li><strong>{$COMPANY}</strong></li>
+	<li>{$ADDRESS}</li>
+	<li>{$CITY}, {$STATE} {$ZIP}</li>
+	<li>{$PHONE}</li>
+	<li>{$WEBSITE}</li>
+</ul>
+
+
+{if $STATUS eq 3}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad">
+		<span class="alert ico">&nbsp;</span>This invoice is not yet published and {$COMPANY} cannot view it!
+	</div>
+</div>
+{/if}
+
+<h3>Invoice Details</h3>
+<div class="ui-widget ui-widget-content ui-corner-all pad-light row">
+<table class="datagrid">
+	<tr class="ui-widget-header">
+		<th>Invoice Id</th>
+		<th>Client</th>
+		<th>Invoice Date</th>
+		<th>Date Due</th>
+		<th>Amount Due</th>
+		<th>Pay Online</th>
+	</tr>
+	<tr class="ui-widget-content">
+		<td>{$INVOICE_UNIQUE_ID}</td>
+		<td>{$CLIENT_NAME}</td>
+		<td>{$INVOICE_DATE}</td>
+		<td><strong>{$INVOICE_DATE_DUE}</strong></td>
+		<td>{$TOTAL}</td>
+		<td>
+			<a class="noborder" href="{$BASE_URL}/invoices.php?mode=pay&id={$INVOICE_ID}"><span class="arrow ico">Pay Online</span></a>
+		</td>
+	</tr>
+</table>
+</div>
+
+<div class="clear"></div>
+
+{if $SHOW_INVOICE_HOURS}
+<h3>Billable Hours</h3>
+<div class="ui-widget ui-widget-content ui-corner-all pad-light row">
+<table class="datagrid">
+<thead>
+	<tr class="ui-widget-header">
+		<th style="width: auto;">Work Log</th>
+		<th style="width: 100px;">Date of Work</th>
+		<th style="width: 100px;">Hours</th>
+		<th style="width: 100px;">Rate</th>
+		<th style="width: 150px; text-align: right;">Amount</th>
+	</tr>
+</thead>
+<tbody>
+{section name=hours loop=$invoice_hours_row}
+<tr class="ui-widget-content">
+	<td>
+		<em>{$invoice_hours_row[hours].WORK_TITLE}</em><br />{$invoice_hours_row[hours].WORK_DESCRIPTION}
+	</td>
+	<td>{$invoice_hours_row[hours].WORK_DATE}</td>
+	<td>{$invoice_hours_row[hours].WORK_HOURS}</td>
+	<td>{$invoice_hours_row[hours].WORK_RATE}</td>
+	<td style="width: 150px; text-align: right;">{$invoice_hours_row[hours].SUBTOTAL}</td>
+</tr>
+{/section}
+</tbody>
+</table>
+{/if}
+</div>
+
+<div class="clear"></div>
+
+{if $SHOW_INVOICE_RATES}
+<h3>Service &amp; Charges</h3>
+<div class="ui-widget ui-widget-content ui-corner-all pad-light row">
+<table class="datagrid">
+<thead>
+	<tr class="ui-widget-header">
+		<th style="width: 200px;">Name</th>
+		<th style="width: auto;">Description</th>
+		<th style="width: 50px;">Interval&nbsp;<span class="help ico" title="Number of days between billing cycles.">&nbsp;</span></th>
+		<th style="width: 150px; text-align: right;">Amount</th>
+	</tr>
+</thead>
+<tbody>
+{section name=rate loop=$invoice_rates_row}
+<tr class="ui-widget-content">
+	<td>{$invoice_rates_row[rate].NAME}</td>
+	<td>{$invoice_rates_row[rate].DESCRIPTION}</td>
+	<td style="width: 50px;">
+	{if $invoice_rates_row[rate].INTERVAL_DAYS gt 0}
+		{$invoice_rates_row[rate].INTERVAL_DAYS} Days
+	{else}
+		N/A
+	{/if}
+	</td>
+	<td style="width: 150px; text-align: right;">{$invoice_rates_row[rate].COST}</td>
+</tr>
+{/section}
+</tbody>
+</table>
+{/if}
+</div>
+
+<div class="clear"></div>
+
+
+{if $SHOW_INVOICE_ITEMS}
+<h3>Invoice Items</h3>
+<div class="ui-widget ui-widget-content ui-corner-all pad-light row">
+<table class="datagrid">
+	<tr class="ui-widget-header">
+		<th style="width: 200px;">Name</th>
+		<th>Description</th>
+		<th style="width: 150px; text-align: right;">Amount</th>
+	</tr>
+	{section name=item loop=$invoice_items_row}
+	<tr class="ui-widget-content">
+		<td style="width: 200px;">{$invoice_items_row[item].ITEM_NAME}</td>
+		<td>{$invoice_items_row[item].ITEM_DESCRIPTION}</td>
+		<td style="width: 150px; text-align: right;">{$invoice_items_row[item].ITEM_PRICE}</td>
+	</tr>
+	{/section}
+</table>
+{/if}
+</div>
+
+<div class="clear"></div>
+
+
+{if $SHOW_INVOICE_DISCOUNTS}
+<h3>Invoice Discount(s)</h3>
+<div class="ui-widget ui-state-error ui-corner-all pad-light row">
+<table class="datagrid">
+	<tr class="ui-widget-header">
+		<th style="width: 200px;">Name</th>
+		<th>Description</th>
+		<th style="width: 150px; text-align: right;">Amount</th>
+	</tr>
+	{section name=discount loop=$invoice_discounts_row}
+	<tr class="ui-widget-content">
+		<td style="width: 200px;">{$invoice_discounts_row[discount].DISCOUNT_NAME}</td>
+		<td>{$invoice_discounts_row[discount].DISCOUNT_REASON}</td>
+		<td style="width: 150px; text-align: right;">({$invoice_discounts_row[discount].DISCOUNT_AMOUNT})</td>
+	</tr>
+	{/section}
+</table>
+{/if}
+</div>
+
+<div class="clear"></div>
+
+
+
+{if $COMMENTS ne ''}
+<h3>Invoice Comments</h3>
+{$COMMENTS}
+{/if}
+
+<div class="clear"></div>
+
+
+<h3>Summary</h3>
+<div class="ui-widget ui-widget-content ui-corner-all pad-light row">
+<table class="datagrid">
+	<tr class="ui-widget-content">
+	  <th style="text-align: right;">Invoice Subtotal</th>
+	  <td style="width: 100px;">{$SUBTOTAL}</td>
+	</tr>
+	<tr class="ui-widget-content">
+	  <th style="text-align: right;">Discount(s)</th>
+	  <td style="width: 100px;">({$DISCOUNT})</span></td>
+	</tr>
+	<tr class="ui-widget-header">
+	  <th style="text-align: right;">Total Amount Due</th>
+	  <td style="width: 100px;">{$TOTAL}</td>
+	</tr>
+</table>
+</div>
+
+<div class="clear"></div>
+
+
+{if $PAID}
+<p>This invoice was paid in full on {$STATUS_DATE}.</p>
+<h2>Thank You!</h2>
+{else}
+
+<div class="ui-widget row">
+	<div class="ui-state-active ui-corner-all pad"> 
+		<h3 class="signature-line">Representative, {$COMPANY}</h3>
+		<p>On behalf of {$COMPANY}, I accept and approve the contents of this invoice.</p>
+	</div>
+</div>
+
+<ul class="pretty">
+	<li class="soft-error">You are only required to sign your first bill to authorize monthly billing for applicable services.</li>
+</ul>
+
+{if not $PRINT_VIEW}
+
+<h2>Actions</h2>
+<div class="buttons">
+<form method="post" action="invoices.php">
+	<fieldset>
+		
+		<input type="hidden" name="client_id" value="{$CLIENT_ID}" />
+		<input type="hidden" name="invoice_id" value="{$INVOICE_ID}" />
+		
+		{if $STATUS eq 3}
+		<button type="submit" name="publish">
+			<span class="approve">Publish &amp; Email to {$COMPANY}</span>
+		</button>
+		{elseif $STATUS eq 2}
+		<p><strong>This invoice was paid {$PAID_DATE}.</strong></p>
+		{elseif $STATUS eq 1}
+			{if ($S_STAFF and $U_INVOICE_PAYMENT) or $S_ADMINISTRATOR}
+			<button type="submit" name="paid">
+				<span class="money">Mark as Paid</span>
+			</button>
+			{/if}
+		
+			<a class="noborder" href="{$BASE_URL}/print/invoice-{$INVOICE_ID}/">
+				<span class="button">
+					<span class="print">Print &amp; Mail</span>
+				</span>
+			</a>
+			
+			{if $PAYPAL_USERNAME ne ''}<a class="button" href="{$BASE_URL}/invoices.php?mode=pay&id={$INVOICE_ID}"><span class="arrow ico"><strong>Pay Online</strong></span></a>{/if}
+			
+		{/if}
+
+		{if ($S_STAFF and $STATUS eq 3 and $U_EDIT_INVOICE) or $S_ADMINISTRATOR}
+		<button type="submit" name="delete">
+			<span class="delete">Delete Invoice</span>
+		</button>
+		{/if}
+
+	</fieldset>
+</form>
+</div>
+{/if}
+
+{/if}
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error ico">{$INVOICE_ERROR}</span>
+	</div>
+</div>
+{/if}

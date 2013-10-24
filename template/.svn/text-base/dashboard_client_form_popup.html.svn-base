@@ -1,0 +1,84 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<script type="text/javascript">
+$().ready(function() {
+	{* force validation on clientform *}
+	$("button#btn_saveclient").click(function(){
+		if( $("#addclient").valid() ) {
+			$("#addclient").validate().form();
+		} else {
+			return false;
+		}
+	});
+	
+	{* on success, if we are in 'projects' we call a different success function *}
+	$("#addclient").ajaxForm({
+		clearForm: true,
+		resetForm: true,
+		dataType: 'json',
+		success: function (data){
+			{if $S_PROJECT}
+			window.location = '{$BASE_URL}/projects.php{if $PROJECT_ID gt 0}?id={$PROJECT_ID}&mode=edit{else}?mode=add{/if}'
+			{else}
+			$('#newclient-modal').dialog('close');
+			$("#clientlist-body").append(data.clientRow);
+			{/if}
+			return true;
+		}
+	});
+
+	$("#addclient").validate();
+});
+
+</script>
+	
+<div id="newclient" class="form" title="Add New Client">
+   <form method="post" id="addclient" action="clients.php">
+		
+		<h2>New Client</h2>
+		<div class="row">
+			<label for="client_name">Company/Organization Name</label>
+			<input class="ui-input" type="text" name="client_name" id="client_name" validate="required:true" />
+		</div>
+	
+		<div class="row">
+			<label for="client_phone">Phone Number</label>
+			
+			<input class="ui-input" type="text" name="client_phone" id="client_phone" validate="phone:true" />
+		</div>
+		
+		<div class="row">
+			<label for="user_address">Address</label>
+			<input class="ui-input" type="text" name="user_address" id="user_address" />
+		</div>
+
+		<div class="row">
+			<label for="client_city">City</label>
+			<input class="ui-input" type="text" name="client_city" id="client_city" />
+		</div>
+	
+		<div class="row">
+			{include file="template/dashboard_ddl_states.html"}
+		</div>
+	
+		<div class="row">
+			<label for="client_zipcode">Zip</label>
+			<input class="ui-input" type="text" name="client_zipcode" id="client_zipcode" validate="min:11111,max:99999" />
+		</div>
+		
+		<div class="row">
+			<label for="client_name" class="error">Company name is required!</label>
+			<label for="client_zipcode" class="error">Please enter a valid zipcode</label>
+			<label for="client_phone" class="error">Please enter a valid phone number!</label>
+		</div>
+
+		<button type="submit" name="saveclient" id="btn_saveclient">
+			<span class="client-add">Save Client</span>
+		</button>
+
+   </form>
+</div>

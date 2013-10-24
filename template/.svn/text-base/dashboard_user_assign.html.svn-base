@@ -1,0 +1,13 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<label for="selected_users[]" class="error" title="Must assign at least one user!"></label>
+<select name="selected_users[]" id="selected_users" class="multiselect" multiple="multiple" size="5">
+	{section name=user loop="$userlist"}
+	<option value="{$userlist[user].USER_ID}"{if $userlist[user].SELECTED} selected="selected"{/if}>{$userlist[user].USERNAME}</option>
+	{/section}
+</select>
+

@@ -1,0 +1,139 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+<div class="ui-state-active ui-corner-all" id="page-quick-nav">
+
+	<div class="pad" style="text-align: right;">
+
+		{if $S_PROJECT}
+		
+		<div class="row">
+			<span style="float: left;">
+			{if $S_ADMINISTRATOR or ($U_ADD_PROJECT and $S_STAFF)}<a class="button" href="{$BASE_URL}/projects.php?mode=add"><span class="project-add ico">New Project</span></a>{/if}
+			{if $SHOW_AUTH_FORM}<a class="button" href="{$BASE_URL}/projects.php?id={$PROJECT_ID}"><span class="project ico">{$PROJECT_NAME}</span></a>{/if}
+			</span>
+			
+			<span style="float: right;">
+			
+			{if $SHOW_DETAIL}
+				{if $S_ADMINISTRATOR or ($U_ADD_MESSAGE and $S_STAFF)}
+				<a class="button" href="{$BASE_URL}/messages.php?mode=add{if $PROJECT_ID}&amp;p={$PROJECT_ID}{/if}"><span class="message-add ico">New Project Message</span></a>
+				{/if}
+				
+				{if $S_ADMINISTRATOR or ($U_ADD_TASK and $S_STAFF)}
+				<a class="button" href="{$BASE_URL}/tasks.php?mode=add{if $S_PROJECT}&amp;p={$PROJECT_ID}{/if}"><span class="task-add ico">New Project Task</span></a>
+				{/if}
+			{/if}
+			
+			{if ($S_ADMINISTRATOR or ($S_STAFF and $PROJECT_ID gt 0 and $S_USER_ACCESS)) and $SHOW_DETAIL}<a href="javascript:;" rel="#project-users" class="button prompt"><span class="users ico">Users</span></a>{/if}
+			<a class="button" href="{$BASE_URL}/projects.php"><span class="projects ico">All Projects</span></a>
+			{if ($S_ADMINISTRATOR or ($U_EDIT_PROJECT and $S_STAFF)) and $SHOW_DETAIL}<a class="button" href="{$BASE_URL}/projects.php?mode=edit&amp;id={$PROJECT_ID}"><span class="project-edit ico">Edit</span></a>{/if}
+			</span>
+		</div>
+		
+		{elseif $S_PROPOSAL}
+		
+		<div class="row">
+			<span style="float: left;">
+			{if $S_ADMINISTRATOR or ($U_ADD_PROPOSAL and $S_STAFF)}<a class="button" href="{$BASE_URL}/proposals.php?mode=add"><span class="proposal-add ico">New Proposal</span></a>{/if}
+			</span>
+			<span style="float:right;">
+			<a class="button" href="{$BASE_URL}/proposals.php"><span class="proposals ico">All Proposals</span></a>
+			{if ($S_ADMINISTRATOR or ($U_EDIT_PROPOSAL and $S_STAFF)) and $SHOW_DETAIL}<a class="button" href="{$BASE_URL}/proposals.php?mode=edit&amp;id={$PROPOSAL_ID}"><span class="proposal-edit ico">Edit</span></a>{/if}
+			</span>
+		</div>
+		
+		{elseif $S_MESSAGE}
+		
+		<div class="row">
+			<span style="float: left;">	
+			{if $S_ADMINISTRATOR or ($U_ADD_MESSAGE and $S_STAFF)}<a class="button" href="{$BASE_URL}/messages.php?mode=add"><span class="message-add ico">New Message</span></a>{/if}
+			</span>
+			<span style="float:right;">
+			<a class="button" href="{$BASE_URL}/messages.php"><span class="messages ico">All Messages</span></a>
+			{if ($S_ADMINISTRATOR or ($U_EDIT_MESSAGE and $S_STAFF)) and $SHOW_DETAIL}<a class="button" href="{$BASE_URL}/messages.php?mode=edit&amp;id={$MESSAGE_ID}"><span class="message-edit ico">Edit</span></a>{/if}
+			</span>
+		</div>
+		
+		{elseif $S_TASK}
+		
+		<div class="row">
+			<span style="float: left;">	
+			{if $S_ADMINISTRATOR or ($U_ADD_TASK and $S_STAFF)}<a class="button" href="{$BASE_URL}/tasks.php?mode=add"><span class="task-add ico">New Task</span></a>{/if}
+			</span>
+			<span style="float:right;">
+			{if $S_STAFF and $TASK_ID gt 0}<a href="javascript:;" rel="#task-users" class="button prompt"><span class="users ico">Users</span></a>{/if}
+			<a class="button" href="{$BASE_URL}/tasks.php"><span class="tasks ico">All Tasks</span></a>
+			{if ($S_ADMINISTRATOR or ($U_EDIT_TASK and $S_STAFF)) and $SHOW_DETAIL}<a class="button" href="{$BASE_URL}/tasks.php?mode=edit&amp;id={$TASK_ID}"><span class="task-edit ico">Edit</span></a>{/if}
+			</span>
+		</div>
+		
+		{elseif $S_INVOICE}
+			
+			<div class="row">
+				<span style="float: left;">
+					{if $S_ADMINISTRATOR or ($U_ADD_INVOICE and $S_STAFF)}
+					<a class="button" href="{$BASE_URL}/invoices.php?mode=add"><span class="invoice-add ico">New Invoice</span></a>
+					{/if}
+					{if $S_ADMINISTRATOR or ($U_ADD_INVOICE and $S_STAFF)}
+					<a class="button" href="{$BASE_URL}/invoices.php?mode=recurrence" title="Add/Edit recurring billing profiles"><span class="invoice-add ico">New Profile</span></a>
+					{/if}
+				</span>
+				<span style="float:right;">
+					<a class="button" href="{$BASE_URL}/invoices.php?view=paid"><span class="money-paid ico">Paid</span></a>
+					<a class="button" href="{$BASE_URL}/invoices.php?view=pending"><span class="money-paid ico">Pending</span></a>
+					<a class="button" href="{$BASE_URL}/invoices.php?view=pastdue"><span class="alert ico">Past Due</span></a>
+					<a class="button" href="{$BASE_URL}/invoices.php"><span class="invoices ico">All Invoices</span></a>
+					{if ($S_ADMINISTRATOR or ($U_EDIT_INVOICE and $S_STAFF)) and $SHOW_DETAIL and $INVOICE_ID gt 0}
+					<a class="button" href="{$BASE_URL}/invoices.php?mode=edit&amp;id={$INVOICE_ID}"><span class="invoice-edit ico">Edit</span></a>
+					{/if}
+				</span>
+			</div>
+		
+		{elseif $S_USER}
+		
+		<div class="row">
+			<span style="float: left;">		
+			{if $S_ADMINISTRATOR or ($U_ADD_USER and $S_STAFF)}<a class="button" href="{$BASE_URL}/users.php?mode=add"><span class="user-add ico">New User</span></a>{/if}
+			</span>
+			<span style="float:right;">
+			<a class="button" href="{$BASE_URL}/users.php"><span class="users ico">List Users</span></a>
+			</span>
+		</div>
+		
+		{elseif $S_CLIENT}
+			<div class="row">
+				<span style="float: left;">
+					{if $S_ADMINISTRATOR or ($U_ADD_CLIENT and $S_STAFF)}<a class="button" href="{$BASE_URL}/clients.php?mode=add"><span class="client-add ico">New Client</span></a>{/if}
+					<a class="button" href="{$BASE_URL}/clients.php"><span class="clients ico">List Clients</span></a>
+				</span>
+				<span style="float: right;">
+					{if $S_ADMINISTRATOR or ($U_ADD_INVOICE and $S_STAFF) and $CLIENT_ID gt 0}<a class="button" href="{$BASE_URL}/invoices.php?mode=add&amp;c={$CLIENT_ID}"><span class="invoice-add ico">Invoice {$COMPANY}</span></a>{/if}
+					{if $S_ADMINISTRATOR or ($U_EDIT_CLIENT and $S_STAFF) and $SHOW_DETAIL or $S_SUPER_USER}<a class="button" href="{$BASE_URL}/clients.php?mode=edit&id={$CLIENT_ID}"><span class="client-edit ico">Edit</span></a>{/if}
+				</span>
+			</div>
+		
+		{else}
+		
+		<div class="row">
+			<span style="float: left;">
+			{if $S_STAFF}
+				{if $S_ADMINISTRATOR or ($U_ADD_USER and $S_STAFF)}<a class="button" href="{$BASE_URL}/users.php?mode=add"><span class="user-add ico">New User</span></a>{/if}
+				{if $S_ADMINISTRATOR or ($U_ADD_CLIENT and $S_STAFF)}<a class="button" href="{$BASE_URL}/clients.php?mode=add"><span class="client-add ico">New Client</span></a>{/if}
+			{else}
+				
+			{/if}
+			</span>
+			<span style="float: right;">
+				{if $S_ADMINISTRATOR}<a class="button" href="{$BASE_URL}/settings.php"><span class="config ico">Control Panel</span></a>{/if}
+			</span>
+		</div>
+		
+		{/if}
+	</div>
+	
+	<div style="clear:both;"></div>
+
+</div>

@@ -1,0 +1,68 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_body.html 41 2010-06-04 16:56:54Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+{include file="template/dashboard_menu.html"}
+
+<script type="text/javascript">
+
+$().ready(function(){
+	$(function() {
+		$("#mydashboard").tabs({
+			cookie: {
+				expires: 7
+			}
+		});
+		{if $S_STAFF}
+		$("#tools").tabs({
+			cookie: {
+				expires: 7
+			}
+		});
+		{/if}
+	});
+});
+</script>
+
+<div id="dashboard" class="ui-reset ui-clearfix ui-component">
+	
+	<h1>{$DASHBOARD_NAME}</h1>
+	<p>Manage your <em>active</em> projects and invoices. To view <em>all</em> items, use the top menu.</p>
+	
+	{if $REQUEST_COUNT gt 0}
+	<div class="ui-widget row" id="success">
+		<div class="ui-state-highlight ui-corner-all pad"> 
+			<span class="soft-error ico">You have a request being reviewed by our team!</span>
+		</div>
+	</div>
+	{/if}
+
+	<div id="mydashboard">
+		
+		<ul>
+			{*<li><a href="#requests-tab"><span class="requests ico">Proposal Requests ({$REQUEST_COUNT})</span></a></li>*}
+			<li><a href="#projects-tab"><span class="projects ico">Projects ({$PROJECT_COUNT})</span></a></li>
+			<li><a href="#proposals-tab"><span class="proposals ico">Proposals ({$PROPOSAL_COUNT})</span></a></li>
+			<li><a href="#tasks-tab"><span class="tasks ico">Tasks ({$TASK_COUNT})</span></a></li>
+			<li><a href="#messages-tab"><span class="messages ico">Messages ({$MESSAGE_COUNT})</span></a></li>
+			<li><a href="#invoices-tab"><span class="money ico">Invoices ({$INVOICE_COUNT})</span></a></li>
+			{if $S_MANAGER or $S_ADMINISTRATOR}<li><a href="#users-tab"><span class="user ico">Users</span></a></li>{/if}
+			{if $S_STAFF}<li><a href="#clients-tab"><span class="client ico">Clients ({$CLIENT_COUNT})</span></a></li>{/if}
+		</ul>
+
+		{*<div id="requests-tab">{include file="template/dashboard_myrequests.html"}</div>*}
+		<div id="projects-tab">{include file="template/dashboard_myprojects.html"}</div>
+		<div id="proposals-tab">{include file="template/dashboard_myproposals.html"}</div>
+		<div id="tasks-tab">{include file="template/dashboard_mytasks.html"}</div>
+		<div id="messages-tab">{include file="template/dashboard_mymessages.html"}</div>
+		<div id="invoices-tab">{include file="template/dashboard_myinvoices.html"}</div>
+		{if $S_MANAGER or $S_ADMINISTRATOR}<div id="users-tab">{include file="template/dashboard_myusers.html"}</div>{/if}
+		{if $S_STAFF}<div id="clients-tab">{include file="template/dashboard_myclients.html"}</div>{/if}
+	</div>
+
+</div>
+
+{include file="template/overall_footer.html"}

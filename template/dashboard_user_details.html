@@ -1,0 +1,377 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_user_details.html 31 2010-05-24 03:15:38Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+<script type="text/javascript" src="{$BASE_URL}/js/users/user_details.js"></script>
+<script type="text/javascript">
+$().ready(function() {
+	{section name=org loop=$companyrow}
+	$("#clientform-{$companyrow[org].CLIENT_ID}").ajaxForm({
+		success: function(){
+			
+			{* $("#clientform-{$companyrow[org].CLIENT_ID}").hide("fast");
+			$("#success-clientform-{$companyrow[org].CLIENT_ID}").show("fast");*}
+			
+			$("#success-clientform-{$companyrow[org].CLIENT_ID}").fadeIn(1000).delay(2000).fadeOut(500);
+			return true;
+		}
+	});
+	{/section}
+});
+</script>
+
+{if $INVALID_USER}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="error ico">Sorry! I can't find a profile match!</span>
+	</div>
+</div>
+{else}
+
+
+<div id="user-profile">
+
+	<div class="left" style="width: 35%;">
+
+		<h1>{$FORM_NAME}</h1>
+		
+		<div class="ui-widget row" id="user-error" style="display: none;">
+			<div class="ui-state-error ui-corner-all pad"> 
+				<span class="error ico">&nbsp;</span>The email address <strong><span id="bad-email"></span></strong> is already used by an existing user!
+			</div>
+		</div>
+		
+
+		<form method="post" id="profileform" action="{$BASE_URL}/users.php">
+		<fieldset>
+		<input type="hidden" name="user_id" id="profile_user_id" value="{$PROFILE_USER_ID}" />
+
+			{if $S_ADMINISTRATOR or ($U_EDIT_USER and $S_STAFF and $USER_ID ne $PROFILE_USER_ID)}
+			<div class="row">
+				<label for="group_id">User Groups&nbsp;<span class="help ico" title="Remember that permissions layer upon themselves.">&nbsp;</span></label>
+				<select class="multiselect" name="user_groups[]" multiple="multiple" id="group_id">
+				{section name=group loop="$grouprow"}
+					<option value="{$grouprow[group].GROUP_ID}"{if $grouprow[group].GROUP_MEMBER} selected="selected"{/if}>{$grouprow[group].GROUP_NAME}</option>
+				{/section}
+				</select>
+			</div>
+			{/if}
+			
+			<div class="row">
+				<label for="user_realname">Real Name</label>
+				{if $ALLOW_EDITS or ($U_EDIT_USER and $S_STAFF) or $S_ADMINISTRATOR}
+				<label for="user_realname" class="error" title="You need to provide your full name!">&nbsp;</label>
+				<input class="ui-input" type="text" name="user_realname" id="user_realname" validate="required:true" value="{$PROFILE_USER_REALNAME}" />
+				{else}
+				<label id="user_realname">{$PROFILE_USER_REALNAME}</label>
+				{/if}
+			</div>
+			
+			<div class="row">
+				<label for="user_email">Email Address</label>
+				{if $ALLOW_EDITS or ($U_EDIT_USER and $S_STAFF) or $S_ADMINISTRATOR}
+				<label for="user_email" class="error" title="user_email">&nbsp;</label>
+				<input class="ui-input" type="text" name="user_email" id="user_email" validate="required:true,email:true" value="{$PROFILE_USER_EMAIL}" />
+				{else}
+				<label id="user_email">{$PROFILE_USER_EMAIL}</label>
+				{/if}
+			</div>
+			
+			<div class="row">
+				<label title="We use user gender to customize certain icons">User Gender</label>
+				<div class="radiobuttons">
+					<input type="radio" id="user-male" name="user_gender"  value="m" checked="checked" /><label for="user-male"><span class="user-male ico">Male</span></label>
+					<input type="radio" id="user-female" name="user_gender" value="f"  /><label for="user-female"><span class="user-female ico">Female</span></label>
+				</div>
+			</div>
+			
+			<div class="row">
+				<label for="user_phone">Phone Number</label>
+				{if $ALLOW_EDITS or ($U_EDIT_USER and $S_STAFF) or $S_ADMINISTRATOR}
+				<label for="user_phone" class="error" title="user_phone">&nbsp;</label>
+				<input class="ui-input" type="text" name="user_phone" id="user_phone" validate="phone:true" value="{$PROFILE_USER_PHONE}" />
+				{else}
+				<label id="user_phone">{$PROFILE_USER_PHONE}</label>
+				{/if}
+			</div>
+			
+			<div class="row">
+				<label for="user_sms">SMS Notifications&nbsp;&nbsp;<span class="help ico" title="If you would like to receive SMS notifications *and* emails, select this option.">&nbsp;</span></label>
+				{if $ALLOW_EDITS or ($U_EDIT_USER and $S_STAFF) or $S_ADMINISTRATOR}
+				<input class="ui-custom-input" type="checkbox" name="user_sms" id="user_sms" value="1" {if $PROFILE_USER_SMS} checked="checked" {/if}/>
+				{else}
+				<span class="ico {if $PROFILE_USER_SMS}approve">Receive SMS{else}alert">Do not receive SMS{/if}</span>
+				{/if}
+			</div>
+
+			{if $PROFILE_USER_ID gt 0}
+				<div class="row">
+					<h3><span class="feedback ico">Change Password</span></h3>
+				</div>
+				
+				{if $ALLOW_EDITS or ($U_EDIT_USER and $S_STAFF) or $S_ADMINISTRATOR}
+				<div class="row">
+					<label for="new_password">New Password</label>
+					<label for="new_password" class="error" title="Password must be at least 6 characters!">&nbsp;</label>
+					<input class="ui-input" type="password" name="new_password" id="new_password" validate="minlength:6" />
+				</div>
+				{/if}
+				
+				{if $ALLOW_EDITS or ($U_EDIT_USER and $S_STAFF) or $S_ADMINISTRATOR}
+				<div class="row">
+					<label for="new_password_confirm">New Password Confirm</label>
+					<label for="new_password_confirm" class="error" title="Password mismatch!">&nbsp;</label>
+					<input class="ui-input" type="password" name="new_password_confirm" id="new_password_confirm" />
+				</div>
+				{/if}
+			{/if}
+			
+			<div class="ui-widget row" id="profile-saved" style="display: none;">
+				<div class="ui-state-highlight ui-corner-all pad"> 
+					<span class="approve ico">Profile Saved Successfully!</span>
+				</div>
+			</div>
+			
+			{if $ALLOW_EDITS or $U_EDIT_USER or $S_ADMINISTRATOR}
+			<div class="row">
+				<button type="submit" name="save" id="saveprofile">
+					<span class="save">Save Profile</span>
+				</button>
+			</div>
+			{/if}
+
+		</fieldset>
+		</form>
+
+	</div>
+	
+	<div class="right" style="width: 65%;">
+
+		<div style="float: right; width: 85%;">
+		
+			<h3>User Permissions</h3>
+			{if $PROFILE_IS_STAFF}
+				{if $S_ADMINISTRATOR or ($U_EDIT_USER and $S_STAFF)}
+				<p>Select the permissions {$PROFILE_USER_REALNAME} should have.<br /><strong>Remember, some permissions are overwritten <em>or</em> enforced via user role!</strong></p>
+
+				<form method="post" action="{$BASE_URL}/users.php" id="user-permissions">
+					<fieldset>
+						
+						<input type="hidden" name="user_id" value="{$PROFILE_USER_ID}" />
+						
+						<div class="row">
+							<div class="left">
+								<div class="custominput row">
+									<h3><span class="invoice ico">Invoices</span></h3>
+									{section name=auth loop=$authrow_invoice}
+										<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_invoice[auth].AUTH_OPTION}" id="{$authrow_invoice[auth].AUTH_OPTION}" value="{$authrow_invoice[auth].AUTH_OPTION_ID}"{if $authrow_invoice[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_invoice[auth].AUTH_OPTION}"><span class="{$authrow_invoice[auth].AUTH_ICO} ico">{$authrow_invoice[auth].AUTH_OPTION_CLEAN}</span></label>
+									{/section}
+								</div>
+									
+								<div class="custominput row">
+								<h3><span class="projects ico">Projects</span></h3>
+								{section name=auth loop=$authrow_project}
+									<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_project[auth].AUTH_OPTION}" id="{$authrow_project[auth].AUTH_OPTION}" value="{$authrow_project[auth].AUTH_OPTION_ID}"{if $authrow_project[auth].AUTH_SETTING} checked="checked"{/if} />
+									<label for="{$authrow_project[auth].AUTH_OPTION}"><span class="{$authrow_project[auth].AUTH_ICO} ico">{$authrow_project[auth].AUTH_OPTION_CLEAN}</span></label>
+								{/section}
+								</div>
+								
+								<div class="custominput row">
+								<h3><span class="tasks ico">Tasks</span></h3>
+								{section name=auth loop=$authrow_task}
+									<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_task[auth].AUTH_OPTION}" id="{$authrow_task[auth].AUTH_OPTION}" value="{$authrow_task[auth].AUTH_OPTION_ID}"{if $authrow_task[auth].AUTH_SETTING} checked="checked"{/if} />
+									<label for="{$authrow_task[auth].AUTH_OPTION}"><span class="{$authrow_task[auth].AUTH_ICO} ico">{$authrow_task[auth].AUTH_OPTION_CLEAN}</span></label>
+								{/section}
+								</div>
+								
+								<div class="custominput row">
+								<h3><span class="messages ico">Messages</span></h3>
+								{section name=auth loop=$authrow_message}
+									<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_message[auth].AUTH_OPTION}" id="{$authrow_message[auth].AUTH_OPTION}" value="{$authrow_message[auth].AUTH_OPTION_ID}"{if $authrow_message[auth].AUTH_SETTING} checked="checked"{/if} />
+									<label for="{$authrow_message[auth].AUTH_OPTION}"><span class="{$authrow_message[auth].AUTH_ICO} ico">{$authrow_message[auth].AUTH_OPTION_CLEAN}</span></label>
+								{/section}
+								</div>
+							</div>
+							<div class="right">
+								<div style="width: 90%; float:right;">
+									<div class="custominput row">
+									<h3><span class="proposals ico">Dashboard</span></h3>
+									{section name=auth loop=$authrow_config}
+										<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_config[auth].AUTH_OPTION}" id="{$authrow_config[auth].AUTH_OPTION}" value="{$authrow_proposal[auth].AUTH_OPTION_ID}"{if $authrow_config[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_config[auth].AUTH_OPTION}"><span class="{$authrow_config[auth].AUTH_ICO} ico">{$authrow_config[auth].AUTH_OPTION_CLEAN}</span></label>
+									{/section}
+									</div>
+									
+									<div class="custominput row">
+									<h3><span class="proposals ico">Proposals</span></h3>
+									{section name=auth loop=$authrow_proposal}
+										<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_proposal[auth].AUTH_OPTION}" id="{$authrow_proposal[auth].AUTH_OPTION}" value="{$authrow_proposal[auth].AUTH_OPTION_ID}"{if $authrow_proposal[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_proposal[auth].AUTH_OPTION}"><span class="{$authrow_proposal[auth].AUTH_ICO} ico">{$authrow_proposal[auth].AUTH_OPTION_CLEAN}</span></label>
+									{/section}
+									</div>
+									
+									<div class="custominput row">
+									<h3><span class="users ico">Users</span></h3>
+									{section name=auth loop=$authrow_user}
+										<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_user[auth].AUTH_OPTION}" id="{$authrow_user[auth].AUTH_OPTION}" value="{$authrow_user[auth].AUTH_OPTION_ID}"{if $authrow_user[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_user[auth].AUTH_OPTION}"><span class="{$authrow_user[auth].AUTH_ICO} ico">{$authrow_user[auth].AUTH_OPTION_CLEAN}</span></label>
+									{/section}
+									</div>
+									
+									<div class="custominput row">
+									<h3><span class="clients ico">Clients</span></h3>
+									{section name=auth loop=$authrow_client}
+										<input {if not $S_ADMINISTRATOR or not $S_MANAGER}disabled="disabled"{/if}type="checkbox" name="{$authrow_client[auth].AUTH_OPTION}" id="{$authrow_client[auth].AUTH_OPTION}" value="{$authrow_client[auth].AUTH_OPTION_ID}"{if $authrow_client[auth].AUTH_SETTING} checked="checked"{/if} />
+										<label for="{$authrow_client[auth].AUTH_OPTION}"><span class="{$authrow_client[auth].AUTH_ICO} ico">{$authrow_client[auth].AUTH_OPTION_CLEAN}</span></label>
+									{/section}
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div style="clear:both;"></div>
+						
+						<div class="ui-widget row" id="permissions-saved" style="display: none;">
+							<div class="ui-state-highlight ui-corner-all pad"> 
+								<span class="approve ico">Permissions Saved Successfully!</span>
+							</div>
+						</div>
+						
+						{if $S_ADMINISTRATOR or $S_MANAGER}
+						<div class="row" style="text-align: right;">
+							<button type="submit" name="savepermissions">
+								<span class="save">Save Permissions</span>
+							</button>
+						</div>
+						{/if}
+						
+					</fieldset>
+				</form>
+				{elseif $S_STAFF and not $U_EDIT_USER and not $S_ADMINISTRATOR}
+				
+					<h3>Roles</h3>
+					<ul class="pretty">
+					{section name=group loop="$grouprow"}
+						{if $grouprow[group].SELECTED}<li class="{$grouprow[group].GROUP_ICO}asdf">{$grouprow[group].GROUP_NAME}</li>{/if}
+					{sectionelse}
+						<li class="error"><strong>{$PROFILE_USER_REALNAME} does not belong to any groups!</strong></li>
+					{/section}
+					</ul>
+					
+					{* User cannot modify permissions, but let's at least display what they are if they're a staff member *}
+					
+					<h3>Permissions</h3>
+					
+					<ul class="pretty">
+					{section name=option loop="$user_permissions"}
+					<li class="{$user_permissions[option].ICO}">{$user_permissions[option].AUTH_OPTION_CLEAN}</li>
+					{sectionelse}
+					<li class="soft-error"><strong>{$PROFILE_USER_REALNAME} has no permissions!</strong></li>
+					{/section}
+					</ul>
+				
+				{/if}
+			{else}
+			<div class="ui-widget">
+				<div class="ui-state-highlight ui-corner-all pad">
+					<span class="soft-error ico">&nbsp;</span>Permissions are for staff members only.
+				</div>
+			</div>
+			{/if}
+			
+			<h3>{if ($S_STAFF and $U_EDIT_USER) or $S_ADMINISTRATOR or $S_CLIENT}User{else}My{/if} Companies</h3>
+			<p>Various actions throughout your dashboard trigger emails to be sent to your organization to alert you of work being completed. You have the option to disable that feature for each organization you belong to.</p>
+			{if $SHOW_CLIENT_LIST}
+				{section name=company loop=$companyrow}
+				<form method="post" action="clients.php" id="clientform-{$companyrow[company].CLIENT_ID}">
+				<fieldset>
+					<div class="ui-widget ui-widget-content ui-corner-all ui-static pad-light row">
+					   <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix pad">
+						  <span id="ui-dialog-title-dialog" class="ui-dialog-title">{$companyrow[company].COMPANY} - {$companyrow[company].WEBSITE}</span>
+					   </div>
+					   <div class="pad" id="client-{$companyrow[company].CLIENT_ID}">
+						  
+						<input type="hidden" name="client_id" value="{$companyrow[company].CLIENT_ID}" />
+						<input type="hidden" name="user_id" value="{$companyrow[company].USER_ID}" />
+
+						<div class="row">
+							<ul class="pretty">
+								<li class="phone">{$companyrow[company].PHONE}</li>
+								<li class="home">{$companyrow[company].FULL_ADDRESS}</li>
+							</ul>
+						</div>
+
+						<div class="row">
+							<p><strong>Email Preferences for {$companyrow[company].COMPANY}</strong></p>
+							<div class="radiobuttons">
+								<input type="radio" name="email" id="email_yes" value="0"{if not $companyrow[company].EMAIL} checked="checked"{/if} />
+									<label for="email_yes"><span class="message-delete ico">Don't Send</span></label>
+								<input type="radio" name="email" id="email_no" value="1"{if $companyrow[company].EMAIL} checked="checked"{/if} />
+									<label for="email_no"><span class="message-add ico">Send All</span></label>
+							</div>
+						</div>
+
+						<div class="ui-widget row" id="success-clientform-{$companyrow[company].CLIENT_ID}" style="display: none;">
+							<div class="ui-state-highlight ui-corner-all pad"> 
+								<span class="approve ico"><strong>{$companyrow[company].COMPANY} preferences saved!</strong></span>
+							</div>
+						</div>
+						
+						<button type="submit" name="clientuser_preferences"><span class="save ico">Save</span></button>
+
+					   </div>
+					</div>
+				</fieldset>
+				</form>
+				{/section}
+			{else}
+				{if $PROFILE_USER_ID gt 0}
+				<div class="ui-widget row">
+					<div class="ui-state-highlight ui-corner-all pad"> 
+						<span class="soft-error ico">&nbsp;</span>{$PROFILE_USER_REALNAME} is not associated with any company or organization.
+					</div>
+				</div>
+				{/if}
+			{/if}
+			
+			{if $S_ADMINISTRATOR or $S_MANAGER}
+			<h3><span style="float: right;" class="add-new"><a href="{$BASE_URL}/clients.php?mode=add" class="noborder"><span class="client-add ico">New</span></a></span>Manage User Companies</h3>
+			<p>Users can belong to more than one organization. Select below to add/remove companies from a user profile.</p>
+			<form method="post" action="clients.php" id="clientform">
+			<fieldset>
+				<input type="hidden" name="user_id" id="companies_user_id" value="{$PROFILE_USER_ID}" />
+				<div class="row">
+					<p><select name="clientlist[]" id="clientlist" class="multiselect" multiple="multiple" size="5">
+						{section name=client loop=$clientlist}
+						<option value="{$clientlist[client].CLIENT_ID}"{if $clientlist[client].SELECTED} selected="selected"{/if}>{$clientlist[client].COMPANY}</option>
+						{/section}
+					</select></p>
+				</div>
+				
+				<div class="row" style="text-align: right;">
+					<button type="submit" name="userclients">
+						<span class="save">Save User Companies</span>
+					</button>
+				</div>
+			</fieldset>
+			</form>
+			{else}
+			<div class="ui-widget">
+				<div class="ui-state-highlight ui-corner-all padding"> 
+					<span class="error ico">&nbsp;</span>Only your Administrator or {$COMPANY_NAME} Managers can manage user companies.
+				</div>
+			</div>
+			{/if}
+		
+		</div>
+	</div>
+
+</div>
+
+<div style="clear: both;"></div>
+
+{/if}
+
+<div style="clear: both;"></div>

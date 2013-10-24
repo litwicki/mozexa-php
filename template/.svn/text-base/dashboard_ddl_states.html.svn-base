@@ -1,0 +1,60 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<label for="state">State</label>
+<select class="radiodropdown" name="state" id="state"> 
+	<option value="AL"{if $STATE eq "AL"} selected="selected"{/if}>Alabama</option> 
+	<option value="AK"{if $STATE eq "AK"} selected="selected"{/if}>Alaska</option> 
+	<option value="AZ"{if $STATE eq "AZ"} selected="selected"{/if}>Arizona</option> 
+	<option value="AR"{if $STATE eq "AR"} selected="selected"{/if}>Arkansas</option> 
+	<option value="CA"{if $STATE eq "CA"} selected="selected"{/if}>California</option> 
+	<option value="CO"{if $STATE eq "CO"} selected="selected"{/if}>Colorado</option> 
+	<option value="CT"{if $STATE eq "CT"} selected="selected"{/if}>Connecticut</option> 
+	<option value="DE"{if $STATE eq "DE"} selected="selected"{/if}>Delaware</option> 
+	<option value="DC"{if $STATE eq "DC"} selected="selected"{/if}>District Of Columbia</option> 
+	<option value="FL"{if $STATE eq "FL"} selected="selected"{/if}>Florida</option> 
+	<option value="GA"{if $STATE eq "GA"} selected="selected"{/if}>Georgia</option> 
+	<option value="HI"{if $STATE eq "HI"} selected="selected"{/if}>Hawaii</option> 
+	<option value="ID"{if $STATE eq "ID"} selected="selected"{/if}>Idaho</option> 
+	<option value="IL"{if $STATE eq "IL"} selected="selected"{/if}>Illinois</option> 
+	<option value="IN"{if $STATE eq "IN"} selected="selected"{/if}>Indiana</option> 
+	<option value="IA"{if $STATE eq "IA"} selected="selected"{/if}>Iowa</option> 
+	<option value="KS"{if $STATE eq "KS"} selected="selected"{/if}>Kansas</option> 
+	<option value="KY"{if $STATE eq "KY"} selected="selected"{/if}>Kentucky</option> 
+	<option value="LA"{if $STATE eq "LA"} selected="selected"{/if}>Louisiana</option> 
+	<option value="ME"{if $STATE eq "ME"} selected="selected"{/if}>Maine</option> 
+	<option value="MD"{if $STATE eq "MD"} selected="selected"{/if}>Maryland</option> 
+	<option value="MA"{if $STATE eq "MA"} selected="selected"{/if}>Massachusetts</option> 
+	<option value="MI"{if $STATE eq "MI"} selected="selected"{/if}>Michigan</option> 
+	<option value="MN"{if $STATE eq "MN"} selected="selected"{/if}>Minnesota</option> 
+	<option value="MS"{if $STATE eq "MS"} selected="selected"{/if}>Mississippi</option> 
+	<option value="MO"{if $STATE eq "MO"} selected="selected"{/if}>Missouri</option> 
+	<option value="MT"{if $STATE eq "MY"} selected="selected"{/if}>Montana</option> 
+	<option value="NE"{if $STATE eq "NE"} selected="selected"{/if}>Nebraska</option> 
+	<option value="NV"{if $STATE eq "NV"} selected="selected"{/if}>Nevada</option> 
+	<option value="NH"{if $STATE eq "NH"} selected="selected"{/if}>New Hampshire</option> 
+	<option value="NJ"{if $STATE eq "NJ"} selected="selected"{/if}>New Jersey</option> 
+	<option value="NM"{if $STATE eq "NM"} selected="selected"{/if}>New Mexico</option> 
+	<option value="NY"{if $STATE eq "NY"} selected="selected"{/if}>New York</option> 
+	<option value="NC"{if $STATE eq "NC"} selected="selected"{/if}>North Carolina</option> 
+	<option value="ND"{if $STATE eq "ND"} selected="selected"{/if}>North Dakota</option> 
+	<option value="OH"{if $STATE eq "OH"} selected="selected"{/if}>Ohio</option> 
+	<option value="OK"{if $STATE eq "OK"} selected="selected"{/if}>Oklahoma</option> 
+	<option value="OR"{if $STATE eq "OR"} selected="selected"{/if}>Oregon</option> 
+	<option value="PA"{if $STATE eq "PA"} selected="selected"{/if}>Pennsylvania</option> 
+	<option value="RI"{if $STATE eq "RI"} selected="selected"{/if}>Rhode Island</option> 
+	<option value="SC"{if $STATE eq "SC"} selected="selected"{/if}>South Carolina</option> 
+	<option value="SD"{if $STATE eq "SD"} selected="selected"{/if}>South Dakota</option> 
+	<option value="TN"{if $STATE eq "TN"} selected="selected"{/if}>Tennessee</option> 
+	<option value="TX"{if $STATE eq "TX"} selected="selected"{/if}>Texas</option> 
+	<option value="UT"{if $STATE eq "UT"} selected="selected"{/if}>Utah</option> 
+	<option value="VT"{if $STATE eq "VT"} selected="selected"{/if}>Vermont</option> 
+	<option value="VA"{if $STATE eq "VA"} selected="selected"{/if}>Virginia</option> 
+	<option value="WA"{if $STATE eq "WA"} selected="selected"{/if}>Washington</option> 
+	<option value="WV"{if $STATE eq "WV"} selected="selected"{/if}>West Virginia</option> 
+	<option value="WI"{if $STATE eq "WI"} selected="selected"{/if}>Wisconsin</option> 
+	<option value="WY"{if $STATE eq "WY"} selected="selected"{/if}>Wyoming</option>
+</select>

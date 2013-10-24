@@ -1,0 +1,355 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file="template/overall_header.html"}
+{include file="template/dashboard_menu.html"}
+
+<script type="text/javascript" src="{$BASE_URL}/js/settings/settings.js"></script>
+
+{if $LOGO_ERROR ne ''}
+<script type="text/javascript">
+$().ready(function(){
+	$("#logo-error").show();
+});
+</script>
+{/if}
+
+<div id="dashboard">
+
+	<h1>{$DASHBOARD_NAME} Dashboard Settings</h1>
+	
+	<div id="settings">
+		
+		<ul>
+			<li><a href="#settings-config"><span class="config ico">Configuration</span></a></li>
+			<li><a href="#payment-config"><span class="money ico">Payment Settings</span></a></li>
+			<li><a href="#settings-logo"><span class="colors ico">Theme</span></a></li>
+			<li><a href="#settings-imagery"><span class="image ico">Logo</span></a></li>
+			<li><a href="#settings-rates"><span class="services ico">Service Rates</span></a></li>
+			<li><a href="#settings-users"><span class="user-staff ico">Staff</span></a></li>
+		</ul>
+		
+		<div id="settings-config">
+			{if $S_ADMINISTRATOR or $S_MANAGER}
+			<h3>Dashboard Configuration</h3>
+			<p>Manage the settings for your entire dashboard.</p>
+			
+			<form method="post" action="{$BASE_URL}/settings.php">
+				<fieldset>
+				{section name=config loop="$configrow"}
+				<div class="row">
+					{if $configrow[config].IS_WYSIWYG}
+						<label for="{$configrow[config].CONFIG_NAME}">
+						{$configrow[config].CONFIG_NAME_CLEAN}{if $configrow[config].CONFIG_DESCRIPTION ne ''}&nbsp;&nbsp;<span class="help ico" title="{$configrow[config].CONFIG_DESCRIPTION}">&nbsp;</span>{/if}
+						</label>
+						<textarea rows="1" cols="1" name="{$configrow[config].CONFIG_NAME}" id="{$configrow[config].CONFIG_NAME}" class="wysiwyg">{$configrow[config].CONFIG_VALUE}</textarea>
+					{else}
+						{if $configrow[config].CONFIG_NAME eq 'company_state'}
+						{include file="template/dashboard_ddl_states.html"}
+						{else}
+						<label for="{$configrow[config].CONFIG_NAME}">
+						{$configrow[config].CONFIG_NAME_CLEAN}{if $configrow[config].CONFIG_DESCRIPTION ne ''}&nbsp;&nbsp;<span class="help ico" title="{$configrow[config].CONFIG_DESCRIPTION}">&nbsp;</span>{/if}
+						</label>
+						<input type="text" class="ui-input" name="{$configrow[config].CONFIG_NAME}" id="{$configrow[config].CONFIG_NAME}" value="{$configrow[config].CONFIG_VALUE}" />
+						{/if}
+					{/if}
+				</div>
+				{/section}
+				
+				<div class="row">
+					<button type="submit" name="save">
+						<span class="save ico">Save Settings</span>
+					</button>
+				</div>
+				
+				</fieldset>
+			</form>
+			{else}
+			<div class="ui-widget row">
+				<div class="ui-state-error ui-corner-all pad"> 
+					<span class="error ico">You do not have permission to modify settings for {$DASHBOARD_NAME}!</span>
+				</div>
+			</div>
+			{/if}
+		</div>
+		
+		<div id="payment-config">
+			{if $S_ADMINISTRATOR or $U_MANAGE_SETTINGS}
+			<h3>Payment Configuration</h3>
+			<p>Manage the payment settings for your <a href="http://www.paypal.com/cgi-bin/webscr?cmd=_wp-pro-overview-outside">Website Payments Pro</a> account. You will be unable to accept payments through your dashboard without these settings. Please verify their accuracy as they are encrypted and essential for successful transaction processing.</p>
+			
+			<form method="post" action="{$BASE_URL}/settings.php">
+				<fieldset>
+				{section name=config loop="$payment_configrow"}
+				<div class="row">
+					{if $payment_configrow[config].IS_WYSIWYG}
+						<label for="{$payment_configrow[config].CONFIG_NAME}">
+						{$payment_configrow[config].CONFIG_NAME_CLEAN}{if $payment_configrow[config].CONFIG_DESCRIPTION ne ''}&nbsp;&nbsp;<span class="help ico" title="{$payment_configrow[config].CONFIG_DESCRIPTION}">&nbsp;</span>{/if}
+						</label>
+						<textarea rows="1" cols="1" name="{$payment_configrow[config].CONFIG_NAME}" id="{$payment_configrow[config].CONFIG_NAME}" class="wysiwyg">{$payment_configrow[config].CONFIG_VALUE}</textarea>
+					{else}
+						<label for="{$payment_configrow[config].CONFIG_NAME}">
+						{$payment_configrow[config].CONFIG_NAME_CLEAN}{if $payment_configrow[config].CONFIG_DESCRIPTION ne ''}&nbsp;&nbsp;<span class="help ico" title="{$payment_configrow[config].CONFIG_DESCRIPTION}">&nbsp;</span>{/if}
+						</label>
+						<input type="text" class="ui-input" name="{$payment_configrow[config].CONFIG_NAME}" id="{$payment_configrow[config].CONFIG_NAME}" value="{$payment_configrow[config].CONFIG_VALUE}" />
+					{/if}
+				</div>
+				{/section}
+				
+				<h3>What is Website Payments Pro?</h3>
+				<p>Want to accept credit cards directly on your website and get the fastest checkout available with PayPal? PayPal Website Payments Pro is the answer. You get the features of an internet merchant account and payment gateway at a low cost.</p>
+				<p><a href="http://www.paypal.com/cgi-bin/webscr?cmd=_wp-pro-overview-outside"><span class="arrow ico">Website Payments Pro</span></a></p>
+
+				<div class="row">
+					<button type="submit" name="save">
+						<span class="save ico">Save Payment Settings</span>
+					</button>
+				</div>
+				
+				</fieldset>
+			</form>
+			{else}
+			<div class="ui-widget row">
+				<div class="ui-state-error ui-corner-all pad"> 
+					<span class="error ico">You do not have permission to modify settings for {$DASHBOARD_NAME}!</span>
+				</div>
+			</div>
+			{/if}
+		</div>
+		
+		<div id="settings-logo">
+			
+			<h3>Theme Settings</h3>
+			<p>Customize the color scheme of your dashboard.</p>
+			
+			<span style="float: right; margin: 0 20px 0 0;">
+				<div class="ui-state-active ui-corner-all pad" style="width: 400px;">
+					<h2>Theme Settings Preview</h2>
+					<p>Reference the image below for a better understanding of how theme settings are applied to your dashboard.</p>
+					<a href="{$BASE_URL}/images/theme_preview_large.jpg"><img class="ui-widget" alt="Theme Preview" src="{$BASE_URL}/images/theme_preview_small.jpg" /></a>
+				</div>
+			</span>
+
+			<form method="post" action="{$BASE_URL}/settings.php">
+				<fieldset>
+				{section name=config loop="$theme_configrow"}
+				<div class="row">
+					{if $theme_configrow[config].IS_WYSIWYG}
+						<label for="{$theme_configrow[config].CONFIG_NAME}">
+						{$theme_configrow[config].CONFIG_NAME_CLEAN}{if $theme_configrow[config].CONFIG_DESCRIPTION ne ''}&nbsp;&nbsp;<span class="help ico" title="{$theme_configrow[config].CONFIG_DESCRIPTION}">&nbsp;</span>{/if}
+						</label>
+						<textarea rows="1" cols="1" name="{$theme_configrow[config].CONFIG_NAME}" id="{$theme_configrow[config].CONFIG_NAME}" class="wysiwyg">{$theme_configrow[config].CONFIG_VALUE}</textarea>
+					{else}
+						<label for="{$theme_configrow[config].CONFIG_NAME}">
+						{$theme_configrow[config].CONFIG_NAME_CLEAN}{if $theme_configrow[config].CONFIG_DESCRIPTION ne ''}&nbsp;&nbsp;<span class="help ico" title="{$theme_configrow[config].CONFIG_DESCRIPTION}">&nbsp;</span>{/if}
+						</label>
+						<input type="text" class="ui-corner-all pad-light {if $theme_configrow[config].CONFIG_NAME_CLEAN ne 'Theme Font'}colorpicker{/if}" style="width: 100px; border: 1px solid #000;" name="{$theme_configrow[config].CONFIG_NAME}" id="{$theme_configrow[config].CONFIG_NAME}" value="{$theme_configrow[config].CONFIG_VALUE}" />
+					{/if}
+				</div>
+				{/section}
+				
+				<div class="buttons row">
+					<button type="submit" name="save">
+						<span class="save ico">Save Theme Settings</span>
+					</button>
+				</div>
+				
+				</fieldset>
+			</form>
+
+		</div>
+		
+		<div id="settings-imagery">
+			
+			<h3>Company Logo</h3>
+			<p>Upload your company logo and/or dashboard background image.</p>
+			
+			<div class="row">
+				<div class="left">
+					
+					<h2>Company Logo</h2>
+					
+					<p id="logo-sample"><img alt="" src="{$LOGO_FILE}" class="logo" /></p>
+				
+					<form method="post" id="logoform" action="{$BASE_URL}/settings.php" enctype="multipart/form-data">
+					  <fieldset>
+						
+						<div class="row">
+							<label>Browse for File...</label>
+							<input type="file" style="width: 400px;" name="logo_file[]" accept="gif|jpg|png" class="multi" maxlength="1" />
+						</div>
+
+						{if $LOGO_ERROR ne ''}
+						<div class="ui-widget row" style="display: none;" id="logo-error">
+							<div class="ui-state-error ui-corner-all pad"> 
+								<span class="error ico">&nbsp;</span>{$LOGO_ERROR}
+							</div>
+						</div>
+						{/if}
+					
+						<div class="row">
+							<button type="submit" name="savelogo">
+								<span class="save">Save Logo</span>
+							</button>
+						</div>
+						
+					  </fieldset>
+					</form>
+					
+				</div>
+				<div class="right">
+					<div style="width: 90%; float:right;display:none;">
+						<h2>Background Image</h2>
+						<p id="background-sample"><img alt="" src="{$BACKGROUND_FILE}" class="logo" /></p>
+					
+						<form method="post" id="background" action="{$BASE_URL}/settings.php" enctype="multipart/form-data">
+						  <fieldset>
+							
+							<div class="row">
+								<label>Browse for File...</label>
+								<input type="file" style="width: 400px;" name="background_file[]" accept="gif|jpg|png" class="multi" maxlength="1" />
+							</div>
+							
+							<div class="row">
+								<input type="checkbox"name="bg_tile" id="bg_tile" value="0" class="ui-custom-input" />
+								<label for="bg_tile">Tile Background?</label>
+							</div>
+
+							{if $BACKGROUND_ERROR ne ''}
+							<div class="ui-widget row" style="display: none;" id="bg-error">
+								<div class="ui-state-error ui-corner-all pad"> 
+									<span class="error ico">&nbsp;</span>{$BACKGROUND_ERROR}
+								</div>
+							</div>
+							{/if}
+						
+							<div class="row">
+								<button type="submit" name="savebg">
+									<span class="save">Save Background</span>
+								</button>
+							</div>
+							
+						  </fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div style="clear:both;"></div>
+		
+		</div>
+		
+		<div id="settings-rates">
+			
+			<h3>Service Rates</h3>
+			<p>Manage your company rates for recurring billing (monthly, hourly, etc).</p>
+			
+			<div class="ui-widget ui-state-highlight ui-corner-all pad row">
+				<span class="soft-error ico">&nbsp;</span>Rates that are designated as hourly can only be applied to timelogs within individual tasks and cannot be billed individually on an invoice. Subsequently,
+				your recurring services can be billed at any <em>daily</em> interval (1, 30, 365, etc).
+			</div>
+			
+			<strong>Select a rate to edit its details.</strong>
+			<div class="datalist row">
+				<div class="ui-widget ui-widget-content ui-corner-all">
+					<form method="post" action="{$BASE_URL}/settings.php" id="ratelist">
+					<fieldset>
+					<table class="datagrid sortable" id="ratestable">
+						<tr class="ui-widget-header">
+							<th class="sorttable_nosort">&nbsp;</th>
+							<th style="width: 200px;">Name</th>
+							<th>Description</th>
+							<th style="width: 50px;">Cost</th>
+							<th style="width: 50px;">Hourly</th>
+						</tr>
+						{section name=rate loop="$raterow"}
+						<tr id="raterow-{$raterow[rate].RATE_ID}" class="ui-widget-content">
+							<td>
+								<input type="radio" class="ui-custom-input" value="{$raterow[rate].RATE_ID}" name="rate_id" id="rate-{$raterow[rate].RATE_ID}" />
+								<label for="rate-{$raterow[rate].RATE_ID}">&nbsp;</label>
+							</td>
+							<td><span id="rate-{$raterow[rate].RATE_ID}-name">{$raterow[rate].NAME}</span></td>
+							<td><span id="rate-{$raterow[rate].RATE_ID}-description">{$raterow[rate].DESCRIPTION}</span></td>
+							<td>$<span id="rate-{$raterow[rate].RATE_ID}-cost">{$raterow[rate].COST}</span></td>
+							<td>{if $raterow[rate].HOURLY}<span class="approve ico">&nbsp;</span>{/if}</td>
+						</tr>
+						{/section}
+					</table>
+					</fieldset>
+					</form>					
+				</div>
+			</div>
+			
+			<h3>Add/Edit Rate</h3>
+			<p>Add a new rate or edit an existing rate by select one from above.</p>
+
+			<div class="row">
+				<form method="post" action="settings.php" id="rateform">
+					<fieldset>
+					
+						<input type="hidden" name="rate_id" id="rate_id" value="" />
+					
+						<div class="row">
+							<label for="rate_name">Service/Rate Name</label>
+							<input type="text" class="ui-input" name="rate_name" id="rate_name" value="" style="width: 350px;" validate="required:true" title="Rate name is required!" />
+						</div>
+						
+						<div class="row">
+							<label for="rate_description">Description</label>
+							<input type="text" class="ui-input" name="rate_description" id="rate_description" value="" style="width: 500px;" validate="required:true" title="Rate description is required!" />
+						</div>
+						
+						<div class="row">
+							<label for="rate_cost">Cost/Amount</label>
+							<input type="text" class="ui-input" name="rate_cost" id="rate_cost" value="" validate="number:true,required:true" title="Invalid cost specified!" />
+						</div>
+						
+						<div class="row">
+							<label>Is this rate charged hourly for work completed?</label>
+							<input type="checkbox" class="ui-custom-input" name="hourly" id="hourly" value="" /><label for="hourly">Hourly Rate</label>
+						</div>
+
+						<div id="rateerrors"></div>
+						
+						<div class="row">
+							<button type="submit" name="saverate" id="saverate">
+								<span class="save">Save</span>
+							</button>
+							
+							<button type="reset" name="reset" id="resetrate">
+								<span class="feedback">Clear Form</span>
+							</button>
+							
+							
+						</div>
+						
+					</fieldset>
+				</form>
+			</div>
+			
+			<form method="post" action="{$BASE_URL}/settings.php" id="deleterateform" style="display: none;">
+			  <fieldset>
+				
+				<input type="hidden" name="rate_id" id="delete_rate_id" value="" />
+				
+				<button type="submit" name="deleterate">
+					<span class="delete">Delete This Rate</span>
+				</button>
+				
+			  </fieldset>
+			</form>
+			
+		</div>
+		
+		<div id="settings-users">
+			{include file="template/dashboard_myusers.html"}
+		</div>
+		
+	</div>
+	
+</div>
+
+{include file="template/overall_footer.html"}

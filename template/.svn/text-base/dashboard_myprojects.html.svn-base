@@ -1,0 +1,84 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{if $SHOW_PROJECTLIST}
+<script type="text/javascript">
+$(function() {
+	{section name=project loop=$projectrow}
+	$('#progress-project-{$projectrow[project].PROJECT_ID}').progressbar({ value: {$projectrow[project].PROGRESS_VALUE} });
+	
+	{/section}
+});
+</script>
+{/if}
+
+<div id="projects">
+
+	<h3>{if $S_STAFF and $U_ADD_PROJECT}<span style="float: right;"><a href="{$BASE_URL}/projects.php?mode=add"><span class="project-add ico">New Project</span></a></span>{/if}Projects&nbsp;({$PROJECT_COUNT})</h3>
+			
+	<p class="small">List of all active projects.</p>
+
+	{if $PROJECT_COUNT gt 0}
+	
+	<div class="datalist">
+		<div class="ui-widget ui-widget-content ui-corner-all datalist row">
+		   <div class="ui-widget-content">
+			   <table id="projectlist" class="datagrid sortable">
+				<thead>
+					<tr class="ui-widget-header">
+						<th>Project Detail</th>
+						<th style="width: 200px;">Status</th>
+						<th style="width: 50px; text-align:center;">Hours</th>
+						
+						{if $S_STAFF}<th style="width: 30px;"><span class="diamond ico" title="Projects I am the owner of.">&nbsp;</span></th>{/if}
+						{if $S_STAFF}<th style="width: 30px;"><span class="user-manager ico" title="Projects I am project manager for.">&nbsp;</span></th>{/if}
+						{if $S_STAFF}<th style="width: 30px;"><span class="wrench ico" title="Projects I have assignments for.">&nbsp;</span></th>{/if}
+						
+					</tr>
+				</thead>
+				<tbody>
+				{section name=project loop=$projectrow}
+				<tr class="ui-widget-content">
+					
+					<td><strong><a title="View Project Details" href="{$BASE_URL}/projects.php?id={$projectrow[project].PROJECT_ID}"><span class="project-open ico">{$projectrow[project].PROJECT_NAME}</span></a></strong>
+					{if not $S_CLIENT}<br /><a class="small" href="{$BASE_URL}/clients.php?id={$projectrow[project].CLIENT_ID}"><span class="client-go ico">{$projectrow[project].COMPANY_NAME}</span></a>{/if}</td>
+					<td class="icon">
+						<div id="progress-project-{$projectrow[project].PROJECT_ID}">
+							<span class="progress-description">
+								{if $projectrow[project].PROJECT_STATUS eq 1}<span class="hourglass ico row"> {$projectrow[project].PROGRESS_VALUE}%</span>
+								{elseif $projectrow[project].PROJECT_STATUS eq 2}<span class="approve ico row"> {$projectrow[project].PROGRESS_VALUE}% (Approved)</span>
+								{elseif $projectrow[project].PROJECT_STATUS eq 3}<span class="error ico row"> {$projectrow[project].PROGRESS_VALUE}% (Complete)</span>
+								{else}<span class="error ico row" title="Project Error: Unknown Status!"> {$projectrow[project].PROGRESS_VALUE}%</span>
+								{/if}
+							</span>
+						</div>
+					</td>
+					<td style="text-align: center;">{$projectrow[project].TOTAL_HOURS}</td>
+					
+					{if $S_STAFF}<td>{if $projectrow[project].OWNER}<span class="approve ico">&nbsp;</span>{/if}</td>{/if}
+					{if $S_STAFF}<td>{if $projectrow[project].MANAGER}<span class="approve ico">&nbsp;</span>{/if}</td>{/if}
+					{if $S_STAFF}<td>{if $projectrow[project].ASSIGNED}<span class="approve ico">&nbsp;</span>{/if}</td>{/if}
+					
+				</tr>
+				{/section}
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	{include file="template/pagination.html"}
+	
+	
+	{else}
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="soft-error ico">{$NO_PROJECTS}</span>
+		</div>
+	</div>
+	{/if}	
+
+</div>

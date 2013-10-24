@@ -1,0 +1,30 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_project_details_small.html 43 2010-06-06 03:32:59Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div class="ui-widget ui-widget-content ui-corner-all ui-static pad-light row" style="float: right; clear: left; margin: 0 0 20px 10px; width: 250px;">
+<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix pad">
+  <span id="ui-dialog-title-dialog" class="ui-dialog-title">Project Details</span>
+</div>
+<div class="pad">
+	<ul class="pretty">
+		{if not $S_PROJECT}<li class="project"><a href="{$BASE_URL}/projects.php?id={$PROJECT_ID}">{$PROJECT_NAME}</a></li>{/if}
+		<li class="user"><strong>Owner</strong> -  {$OWNER_NAME}</li>
+		<li class="user-manager"><strong>Project Managers</strong>
+			<ul class="pretty">
+			{section name=manager loop="$managerlist"}
+				{if $managerlist[manager].ASSIGNED}<li class="user-manager"><a href="{$BASE_URL}/users.php?id={$managerlist[manager].USER_ID}">{$managerlist[manager].USER_REALNAME}</a></li>{/if}
+			{sectionelse}
+			<li class="soft-error">No Project Managers</li>
+			{/section}
+			</ul>
+		</li>
+		<li class="client"><strong>Client</strong> - {$COMPANY}</li>
+		<li class="date"><strong>Started</strong> - {$START_DATE}</li>
+		{if $END_DATE ne ''}<li class="date"><strong>End</strong> - {$END_DATE}</li>{/if}
+		<li class="time"><strong>Hours Logged</strong> - {$PROJECT_HOURS}</li>
+	</ul>
+</div>
+</div>

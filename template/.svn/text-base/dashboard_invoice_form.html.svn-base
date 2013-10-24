@@ -1,0 +1,207 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{if ($S_STAFF and $SHOW_FORM and ($U_ADD_INVOICE or $U_EDIT_INVOICE)) or $S_ADMINISTRATOR}
+
+	<script type="text/javascript" src="{$BASE_URL}/js/invoices/invoice_form.js"></script>
+	
+	<h1>{$FORM_NAME}</h1>
+	<p>Build a custom invoice for this client.</p>
+	
+	{if $CLIENT_ID eq 0}
+	<div id="create-invoice">
+		<form method="get" action="invoices.php">
+		  <fieldset>
+			
+			<label for="client_id">Client to Invoice</label>
+			<p>Select a client below to view all unpaid billable hours for their project(s). You will also have the option to bill a flat fee/rate for your specific services.</p>
+					
+			<table>
+				<tr>
+				<td class="pad">
+					<select class="singleselect" name="c" id="client_id" style="padding-right: 100px;">
+						<option value="">Select a Client</option>
+						{section name=client loop=$clientlist}
+							<option value="{$clientlist[client].CLIENT_ID}">{$clientlist[client].COMPANY}</option>
+						{/section}
+					</select>
+				</td>
+				<td class="pad">
+					<button type="submit" name="mode" value="add">
+						<span class="invoice-go">Start Invoice</span>
+					</button>
+				</td>
+				</tr>
+			</table>
+			
+		  </fieldset>
+		</form>
+	</div>
+	{else}
+		<form method="post" action="{$BASE_URL}/invoices.php" id="invoiceform">
+		<fieldset>
+			
+			<input type="hidden" name="client_id" value="{$CLIENT_ID}" />
+			
+			{if $SHOW_SERVICE_RATES}	
+			<h3>Services &amp; Rates</h3>
+			
+			<div class="datalist service-rates">
+				<div class="ui-widget ui-widget-content ui-corner-all row">
+					<table class="datagrid">
+						<tr class="ui-widget-header">
+							<th style="width: 30px;"></th>
+							<th style="width: 200px;">Service</th>
+							<th>Description</th>
+							<th style="width: 100px; text-align: center;">Cost</th>
+						</tr>
+						{section name=rate loop=$raterow}
+						{if not $raterow[rate].HOURLY}
+						<tr class="ui-widget-content">
+							<td>
+								<input type="checkbox" class="ui-custom-input" value="{$raterow[rate].RATE_ID}" name="invoice_rates[]" id="rate-{$raterow[rate].RATE_ID}" />
+								<label for="rate-{$raterow[rate].RATE_ID}">&nbsp;</label>
+							</td>
+							<td>{$raterow[rate].NAME}</td>
+							<td>{$raterow[rate].DESCRIPTION}</td>
+							<td style="text-align:center;">$<span id="rate-cost-{$raterow[rate].RATE_ID}">{$raterow[rate].COST}</span></td>
+						</tr>
+						{/if}
+						{/section}
+					</table>
+				</div>
+			</div>
+			
+			{else}
+			<div class="ui-widget row">
+				<div class="ui-state-highlight ui-corner-all pad"> 
+					<span class="soft-error ico">&nbsp;</span><strong>There are no rates setup for your dashboard! <span style="float:right;"><a class="noborder" href="{$BASE_URL}/settings.php"><span class="arrow ico">Create your dashboard rates</span></a></span></strong>
+				</div>
+			</div>
+			{/if}
+			
+			<h3>Billable Hours</h3>
+			{if $SHOW_BILLABLE_HOURS}
+			<div class="task-hours">
+				<div class="ui-widget ui-widget-content ui-corner-all pad-light row">
+					<table class="datagrid">
+						<tr class="ui-widget-header">
+							<th style="width: 30px;"></th>
+							<th>Task</th>
+							<th style="width: 150px;">Staff</th>
+							<th>Date</th>
+							<th style="width: 40px; text-align: center;">Hours</th>
+							<th style="width: 40px;">Rate</th>
+							<th style="width: 50px;">Cost</th>
+						</tr>
+						{section name=hours loop=$timelogrow}
+						<tr class="ui-widget-content">
+							<td>
+								<input type="checkbox" class="ui-custom-input" name="invoice_hours[]" id="hours-{$timelogrow[hours].TASK_LOG_ID}" value="{$timelogrow[hours].TASK_LOG_ID}" />
+								<label for="hours-{$timelogrow[hours].TASK_LOG_ID}">&nbsp;</label>
+							</td>
+							<td><a href="javascript:;" rel="#description-{$timelogrow[hours].TASK_LOG_ID}" class="prompt"><span class="task-open ico">{$timelogrow[hours].TASK_NAME}</span></a>
+							<div id="description-{$timelogrow[hours].TASK_LOG_ID}" title="{$timelogrow[hours].TASK_NAME} Details" class="dialog">{$timelogrow[hours].WORK_DESCRIPTION}</div></td>
+							<td>{$timelogrow[hours].WORKER_NAME}</td>
+							<td>{$timelogrow[hours].WORK_DATE}</td>
+							<td style="width: 40px; text-align: center;">{$timelogrow[hours].WORK_HOURS}</td>
+							<td style="width: 40px;">${$timelogrow[hours].COST}</td>
+							<td>$<span id="hours-cost-{$timelogrow[hours].TASK_LOG_ID}">{$timelogrow[hours].ITEM_COST}</span></td>
+						</tr>
+						{/section}
+					</table>
+				</div>
+			</div>
+			{else}
+			<div class="ui-widget row">
+				<div class="ui-state-highlight ui-corner-all pad"> 
+					<span class="soft-error ico">&nbsp;</span><strong>{$NO_UNPAID_HOURS}</strong>
+				</div>
+			</div>
+			{/if}
+			
+			<h3>Invoice Items</h3>
+			<p>If you need to charge your client for an unrecorded service or product, add it as a line item here.</p>
+
+			<div class="ui-widget ui-widget-content ui-corner-all pad-light">
+			<table class="datagrid" id="invoice-items">
+				<thead>
+					<tr class="ui-widget-header">
+						<th style="width: 200px;">Item Name</th>
+						<th>Description</th>
+						<th style="width: 100px;">Price</th>
+						<th style="width: 100px;"><a class="noborder" href="javascript:;" id="add-item" title="Add another invoice item"><span class="add ico">Add</span></a></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			</div>
+			
+			<h3>Invoice Discount(s)</h3>
+			<p>If you would like to apply one or more discounts to your invoice, apply them here.</p>
+
+			<div class="ui-widget ui-widget-content ui-corner-all pad-light">
+			<table class="datagrid" id="invoice-discounts">
+				<thead>
+					<tr class="ui-widget-header">
+						<th style="width: 200px;">Discount Name</th>
+						<th>Reason</th>
+						<th style="width: 100px;">Amount</th>
+						<th style="width: 100px;"><a class="noborder" href="javascript:;" id="add-discount" title="Add another discount item"><span class="add ico">Add</span></a></th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			</div>
+			
+			<h3>Invoice Details</h3>
+			<table class="datagrid row">
+				<tr>
+					<td>
+						<label for="invoice_date">
+						Invoice Date&nbsp;&nbsp;<span class="help ico" title="The date the invoice is to be sent to the client.">&nbsp;</span>
+						</label>
+						<input class="ui-input invoice-date" style="width: 150px;" readonly="readonly" type="text" name="invoice_date" id="invoice_date" 
+						title="Invoice date is required!" validate="required:true" />
+					</td>
+					<td>
+						<label for="invoice_date_due">Date Due</label>
+						<input class="ui-input invoice-date" style="width: 150px;" readonly="readonly" type="text" name="invoice_date_due" id="invoice_date_due" 
+						title="Invoice due-date is required!" validate="required:true" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><label for="invoice-comments">Invoice Comments</label><textarea name="comments" id="invoice-comments" rows="1" cols="1" class="wysiwyg" style="height: 200px; width: 100%;"></textarea></td>
+				</tr>
+			</table>
+			
+			<div id="errors" style="padding:0;" class="row"></div>
+			
+			<div class="buttons row">
+				<button type="submit" name="save" id="saveinvoice">
+					<span class="save">Save Invoice</span>
+				</button>
+			</div>
+					
+		</fieldset>
+		</form>
+	{/if}
+	
+	<div class="ui-widget row" id="success" style="display: none;">
+		<div class="ui-state-highlight ui-corner-all pad"> 
+			<span id="invoice-success"></span>
+		</div>
+	</div>
+
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error ico">{$INVOICE_ERROR}</span>
+	</div>
+</div>
+{/if}

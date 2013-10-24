@@ -1,0 +1,17 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id$
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{include file='overall_header.html'}
+<div id="page">
+
+	<h1>Bad Request!</h1>
+	
+	<p>We're sorry, we cannot process your request.</p>
+	
+	<p class="big"><a href="{$BASE_URL}/request/">Hire Us</a> to build or design your website, <a href="{$BASE_URL}/portfolio/">browse our work</a> or explore <a href="{$BASE_URL}/services/">what we do</a>. Learn more about web standards and <a href="{$BASE_URL}/about/">our philosophy</a>.</p>
+	
+</div>
+{include file='overall_footer.html'}

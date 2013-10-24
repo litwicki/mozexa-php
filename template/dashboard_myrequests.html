@@ -1,0 +1,60 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_myrequests.html 33 2010-05-25 21:08:33Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+<div id="requests"> 
+	
+	<h3>Requests For Proposal&nbsp;({$REQUEST_COUNT})</h3>
+	<p class="small">{if $S_STAFF}Proposal requests that have no proposal!{else}Requests for proposal I have submitted.{/if}</p>
+
+	{if $SHOW_REQUESTLIST}
+	<div class="ui-widget ui-widget-content ui-corner-all">
+		<div class="datalist">
+			<div class="ui-widget-content">
+			<table id="requestlist" class="datagrid sortable">
+			<tr class="ui-widget-header">
+				<th class="icon sorttable_nosort"></th>
+				<th class="status icon">Status</th>
+				<th class="date">Date</th>
+				<th class="name">Client</th>
+				<th class="desc">Company</th>
+			</tr>
+			
+			{section name=request loop=$requestrow}
+			<tr class="ui-widget-content">
+				<td class="icon">
+					<a title="View Request Details" href="{$BASE_URL}/requests.php?id={$requestrow[request].REQUEST_ID}">
+					  <span class="request-open ico">&nbsp;</span>
+					</a>
+				</td>
+				<td class="icon">
+					{if $requestrow[request].REQUEST_STATUS eq 1}<span class="alert ico" title="No proposal written for the client!">
+					{elseif $requestrow[request].REQUEST_STATUS eq 2}<span class="hourglass ico" title="Proposal waiting for client review.">
+					{else}<span class="help ico">
+					{/if}&nbsp;</span>
+				</td>
+				<td class="date">{$requestrow[request].DATE_ADDED_SHORT}</td>
+				<td class="name"><a href="{$BASE_URL}/profile.php?id={$requestrow[request].CLIENT_USER_ID}"><span class="client ico">{$requestrow[request].CLIENT_NAME}</span></a></td>
+				<td class="desc">{$requestrow[request].COMPANY_NAME}</td>
+			</tr>
+			</form>
+			{/section}
+			</table>
+			</div>
+		</div>
+	</div>
+	
+	{include file="template/pagination.html"}
+	
+	
+	{else}
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all padding"> 
+			<span class="soft-error ico">{$NO_REQUESTS}</span>
+		</div>
+	</div>
+	{/if}
+
+</div>

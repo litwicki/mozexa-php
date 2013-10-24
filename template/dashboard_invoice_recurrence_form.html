@@ -1,0 +1,171 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_invoice_form.html 12 2010-05-05 04:17:06Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+
+{if ($S_STAFF and $SHOW_FORM and ($U_ADD_INVOICE or $U_EDIT_INVOICE)) or $S_ADMINISTRATOR}
+
+	<script type="text/javascript" src="{$BASE_URL}/js/invoices/invoice_recurrence_form.js"></script>
+	{* Do not bother displaying this until we have a client, and applicable rates *}
+	{if $CLIENT_ID gt 0}
+	<script type="text/javascript">
+	$().ready(function(){
+		{section name=rate loop="$raterow"}
+		$("#start-date-{$raterow[rate].RATE_ID}").datepicker({ 
+			minDate: '{$raterow[rate].INVOICE_DATE_DUE}'
+		});
+		$("#end-date-{$raterow[rate].RATE_ID}").datepicker({ 
+			minDate: '{$raterow[rate].INVOICE_DATE_DUE}'
+		});
+		{/section}
+	});
+	</script>
+	{/if}
+	
+	<h1>{$FORM_NAME}</h1>
+	<p>Enter and select a client/company below to view eligible rates they have been invoiced. With the eligible rates you can schedule recurring billing for a regular number of days at the <em>amount of the rate</em>.</p>
+	
+	<form method="get" action="invoices.php" id="invoicesearch">
+	<fieldset>
+		<input type="hidden" name="client_id" id="client_id" value="" />
+		<input type="hidden" name="mode" value="recurrence" />
+		<div class="ui-widget row">
+			<label for="select_client_id">Client/Company</label>
+			<input id="select_client_id" name="select_client_id" class="ui-input" style="width: 400px;" value="{$SELECTED_CLIENT}" />&nbsp;&nbsp;
+		</div>
+	</fieldset>
+	</form>
+	
+	<div id="details"{if not $SHOW_INVOICE_DETAILS} style="display: none;"{/if}>
+	
+		{if $SHOW_RATES}
+		<h2>Invoice Details</h2>
+		<div class="datalist">
+			<div class="ui-widget ui-widget-content ui-corner-all">
+				<table class="datagrid">
+					<tr class="ui-widget-header">
+						<th>Invoice Id</th>
+						<th>Client</th>
+						<th>Create Date</th>
+						<th>Invoice Date</th>
+						<th>Date Due</th>
+						<th>Invoice Subtotal</th>
+					</tr>
+					{section name=invoice loop="$invoicerow"}
+					<tr class="ui-widget-content">
+						<td>{$invoicerow[invoice].INVOICE_UNIQUE_ID}</td>
+						<td>{$invoicerow[invoice].COMPANY}</td>
+						<td>{$invoicerow[invoice].DATE_ADDED}</td>
+						<td>{$invoicerow[invoice].INVOICE_DATE}</td>
+						<td><strong>{$invoicerow[invoice].INVOICE_DATE_DUE}</strong></td>
+						<td>{$invoicerow[invoice].TOTAL}</td>
+					</tr>
+					{/section}
+				</table>
+			</div>
+		</div>
+		
+		<h3>Invoice Rates</h3>
+		<p><strong>Note:</strong> Only rates that are not charged hourly can be scheduled for recurring billing, hourly rates will not be displayed/eligible here.</p>
+
+		<form method="post" action="{$BASE_URL}/invoices.php" id="recurrenceform">
+		<fieldset>
+		
+			<div class="datalist row">
+				<div class="ui-widget ui-widget-content ui-corner-all">
+					<table class="datagrid" id="ratestable">
+						<tr class="ui-widget-header">
+							<th style="width: 20px;">&nbsp;</th>
+							<th style="width: 100px;">Invoice Id</th>
+							<th>Rate Details</th>
+							<th style="width: 50px;">Cost</th>
+							<th style="width: 75px;">Start&nbsp;<span class="help ico" title="What date should this cycle begin? Must be AFTER the due-date of the original invoice.">&nbsp;</span></th>
+							<th style="width: 75px;">End&nbsp;<span class="help ico" title="What date should this cycle end? Must be AFTER the start-date.">&nbsp;</span></th>
+							<th style="width: 50px;">Interval&nbsp;<span class="help ico" title="Days between billing periods">&nbsp;</span></th>
+							<th style="width: 75px;">&nbsp;</th>
+						</tr>
+						{section name=rate loop="$raterow"}
+						<tr id="raterow-{$raterow[rate].INVOICE_RATE_ID}" class="{if $raterow[rate].RECURRENCE_FLAG}ui-state-highlight{else}ui-widget-content{/if}">
+							<td class="icon">
+								{if $raterow[rate].RECURRENCE_FLAG}
+									<span class="approve ico" title="This rate is already on a recurring cycle!">&nbsp;</span>
+								{else}
+									<input type="checkbox" class="ui-custom-input" value="{$raterow[rate].INVOICE_RATE_ID}" name="invoice_rate_ids[]" id="rate-{$raterow[rate].RATE_ID}" />
+									<label for="rate-{$raterow[rate].RATE_ID}">&nbsp;</label>
+								{/if}
+							</td>
+							<td>{$raterow[rate].INVOICE_UNIQUE_ID}</td>
+							<td><strong><span id="rate-{$raterow[rate].RATE_ID}-name">{$raterow[rate].NAME}</span></strong><br /><span id="rate-{$raterow[rate].RATE_ID}-description">{$raterow[rate].DESCRIPTION}</span></td>
+							<td>$<span id="rate-{$raterow[rate].RATE_ID}-cost">{$raterow[rate].COST}</span></td>
+							<td>
+								{if $raterow[rate].RECURRENCE_FLAG}
+									{$raterow[rate].START_DATE}
+								{else}
+									<input type="text" name="start_dates[]" id="start-date-{$raterow[rate].RATE_ID}" class="ui-state-disabled" disabled="disabled" readonly="readonly" validate="required:true" title="Start date for '{$raterow[rate].NAME}' cannot be before {$raterow[rate].INVOICE_DATE_DUE}" style="width: 75px;" />
+								{/if}
+							</td>
+							<td>
+								{if $raterow[rate].RECURRENCE_FLAG}
+									{$raterow[rate].END_DATE}
+								{else}
+									<input type="text" name="end_dates[]" class="ui-state-disabled end-date" id="end-date-{$raterow[rate].RATE_ID}" disabled="disabled" readonly="readonly" style="width: 75px;" />
+								{/if}
+							</td>
+							<td>
+								{if $raterow[rate].RECURRENCE_FLAG}
+									{$raterow[rate].INTERVAL_DAYS} Days
+								{else}
+									<input type="text" name="intervals[]" class="ui-state-disabled" disabled="disabled" title="Interval days must be integer value representing days between bills." style="width: 25px;" validate="required:true,digits:true" />
+								{/if}
+							</td>
+							<td>
+								{if $raterow[rate].RECURRENCE_FLAG}<a class="noborder prompt" title="Cancel this invoice profile" href="javascript:;" rel="#cancel-{$raterow[rate].RATE_ID}"><span class="cancel ico">&nbsp;</span></a>{/if}
+							</td>
+						</tr>
+						{/section}
+					</table>
+				</div>
+			</div>
+
+			<div id="rate-errors" class="row"></div>
+			
+			<div class="row">
+				<button type="submit" name="saverecurrences" id="saverecurrences" style="display:none;">
+					<span class="save">Save Invoice Profile(s)</span>
+				</button>
+			</div>
+			
+		</fieldset>
+		</form>
+
+		{* Create popup forms to delete any billing profile *}
+		{section name=rate loop="$raterow"}
+		<div id="cancel-{$raterow[rate].RATE_ID}" class="dialog" title="Cancel: {$raterow[rate].NAME}">
+			<form method="post" action="invoices.php">
+				<fieldset>
+					<input type="hidden" name="invoice_rate_id" value="{$raterow[rate].INVOICE_RATE_ID}" />
+					<p>Are you sure you want to <strong>cancel</strong> <em>{$raterow[rate].NAME}</em> for this client?</p>
+					<button type="submit" name="cancel"><span class="approve ico">Yes! Cancel Billing</span></button>
+				</fieldset>
+			</form>
+		</div>
+		{/section}
+		
+		{/if}
+	
+	</div>
+	
+	<div class="ui-widget row" id="response" style="display: none;">
+		<div class="ui-state-highlight ui-corner-all pad">
+			<div id="response-message"></div>
+		</div>
+	</div>
+
+{else}
+<div class="ui-widget row">
+	<div class="ui-state-error ui-corner-all pad"> 
+		<span class="error ico">{$INVOICE_ERROR}</span>
+	</div>
+</div>
+{/if}

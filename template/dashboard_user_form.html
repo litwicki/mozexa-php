@@ -1,0 +1,256 @@
+{***********************************************************
+  @ author:         jake@litwickimedia.com
+  @	SVN:			$Id: dashboard_user_form.html 43 2010-06-06 03:32:59Z jake $
+  @ copyright:		Copyright 2009,2010 Litwicki Media LLC
+************************************************************}
+<script type="text/javascript" src="{$BASE_URL}/js/users/user_form.js"></script>
+<script type="text/javascript">
+$().ready(function() {
+	{section name=client loop=$clientlist}
+	$("#clientform-client-{$clientlist[client].CLIENT_ID}").ajaxForm({
+		dataType: 'json',
+		success: function(data){
+			var client_id = $("input[name='client_id']").val();
+			$("#email-" + client_id).val(data.email);
+			$("#client-" + client_id).effect("pulsate", 500);
+		}
+	});
+	
+	$(".client-email-toggle").click(function(){
+		var client_id = $(this).val();
+		$("#clientform-client-" + client_id).submit();
+	});
+	
+	{/section}
+	
+	{if ($USER_ID ne $PROFILE_USER_ID) and (not $S_ADMINISTRATOR and not ($S_MANAGER and $U_EDIT_USER)) and $SHOW_DETAIL}
+	$("#saveprofile").hide();
+	$("#profileform input").attr("disabled","disabled");
+	$("#profileform input").removeClass("ui-input");
+	$("#gender").hide();
+	$("#password").hide();
+	{/if}
+	
+});
+</script>
+
+{if $INVALID_USER}
+<div class="ui-widget">
+	<div class="ui-state-error ui-corner-all padding"> 
+		<span class="error ico">Sorry! I can't find a profile match!</span>
+	</div>
+</div>
+{else}
+
+{if ($S_STAFF or $S_ADMINISTRATOR) and $SHOW_DETAIL}
+<form method="get" action="users.php" style="float: right;">
+	<fieldset>
+	<select name="id" id="userlist" name="userlist" onchange="this.form.submit();" style="padding: 5px;">
+		<option value="">Select a Different User</option>
+		{section name=user loop=$userlist}
+		{if $userlist[user].USER_ID ne $PROFILE_USER_ID}<option value="{$userlist[user].USER_ID}">{$userlist[user].USER_REALNAME} ({$userlist[user].USER_ID})</option>{/if}
+		{/section}
+	</select>
+	</fieldset>
+</form>
+{/if}
+
+{if $SHOW_DETAIL}
+{include file="template/user_avatar.html"}
+{/if}
+<h1>{$FORM_NAME}</h1>
+<p>View or manage profile details for {$PROFILE_USER_REALNAME}.</p>
+{if $USER_ID eq $PROFILE_USER_ID}
+<p><a href="javascript:;" rel="#user-avatarform" class="prompt">Change Avatar</a></p>
+<div id="user-avatarform" class="dialog" title="Change User Avatar">
+	<form method="post" action="{$BASE_URL}/users.php" enctype="multipart/form-data">
+		<fieldset>
+			<input type="hidden" name="user_id" value="{$PROFILE_USER_ID}" />
+			
+			<h2>{$PROFILE_USER_REALNAME} Avatar</h2>
+			<p>Please select a gif, jpeg, or png image file. Note it will be resized to 100x100 when uploaded.</p>
+			
+			<div class="row">
+				<label for="attachments">Image File</label>
+				<input type="file" class="multi" name="avatar" accept="gif|jpg|png|jpeg" />
+			</div>
+			
+			<div class="buttons row">
+				<button type="submit" name="saveavatar">
+					<span class="save ico">Save Avatar</span>
+				</button>
+				
+				<a class="button" onclick="$('#user-avatarform').dialog('close');"><span class="close ico">Cancel</span></a>
+			</div>
+		</fieldset>
+	</form>
+</div>
+{/if}
+
+<div class="row clear">&nbsp;</div>
+
+<div class="ui-widget row" id="profile-saved" style="display: none;">
+	<div class="ui-state-highlight ui-corner-all pad"> 
+		<span class="approve ico" id="success-message"></span>
+	</div>
+</div>
+
+<form method="post" id="profileform" action="{$BASE_URL}/users.php">
+
+	<fieldset>
+	<input type="hidden" name="user_id" id="profile_user_id" value="{$PROFILE_USER_ID}" />
+
+	<div id="user-profile">
+
+		<div class="left" style="width: 40%;">
+
+			<h3>Profile Details</h3>
+			
+			<div class="row">
+				<label for="user_firstname">First Name</label>
+				<input class="ui-input" type="text" name="user_firstname" id="user_firstname" validate="required:true" title="You need to provide a first name!" style="width: 300px;" value="{$PROFILE_USER_FIRSTNAME}" />
+			</div>
+			
+			<div class="row">
+				<label for="user_lastname">Last Name</label>
+				<input class="ui-input" type="text" name="user_lastname" id="user_lastname" validate="required:true" title="You need to provide a last name!" style="width: 300px;" value="{$PROFILE_USER_LASTNAME}" />
+			</div>
+			
+			<div class="ui-widget row" id="user-error" style="display: none;">
+				<div class="ui-state-error ui-corner-all pad"> 
+					<span class="error ico">&nbsp;</span>The email address <strong><span id="bad-email"></span></strong> is already taken!
+				</div>
+			</div>
+			
+			<div class="row">
+				<label for="user_email">Email Address</label>
+				<input class="ui-input" type="text" name="user_email" id="user_email" validate="required:true,email:true" title="Email address required!" style="width: 300px;" value="{$PROFILE_USER_EMAIL}" />
+			</div>
+			
+			<div class="row" id="gender">
+				<label title="We use user gender to customize certain icons">User Gender</label>
+				<div class="radiobuttons">
+					<input type="radio" id="user-male" name="user_gender"  value="m"{if $PROFILE_USER_GENDER eq 'm'} checked="checked"{/if} /><label for="user-male"><span class="user-male ico">Male</span></label>
+					<input type="radio" id="user-female" name="user_gender" value="f"{if $PROFILE_USER_GENDER eq 'f'} checked="checked"{/if} /><label for="user-female"><span class="user-female ico">Female</span></label>
+				</div>
+			</div>
+			
+			<div class="row">
+				<label for="user_phone">Phone Number</label>
+				<input class="ui-input" type="text" name="user_phone" id="user_phone" validate="phone:true" value="{$PROFILE_USER_PHONE}" title="Invalid Phone Number!" />
+			</div>
+			
+			<div class="row">
+				<label for="user_aim">AOL Instant Messenger</label>
+				<input class="ui-input" type="text" name="user_aim" id="user_aim" value="{$PROFILE_USER_AIM}" />
+			</div>
+			
+			{*<div class="row">
+				<label>SMS Notifications&nbsp;&nbsp;<span class="help ico" title="If you would like to receive SMS notifications *and* emails, select this option.">&nbsp;</span></label>
+				<label for="user_sms">SMS</label>
+				<input class="ui-custom-input" type="checkbox" name="user_sms" id="user_sms" value="1"{if $PROFILE_USER_SMS} checked="checked"{/if} />
+			</div>*}
+
+			{if $S_EDIT_PROFILE}
+			<div id="password">
+				<div class="row">
+					<h3><span class="feedback ico">Change Password</span></h3>
+				</div>
+
+				<div class="row">
+					<label for="new_password">New Password</label>
+					<input class="ui-input" type="password" name="new_password" id="new_password" validate="minlength:6" title="Password must be at least 6 characters!" />
+				</div>
+
+				<div class="row">
+					<label for="new_password_confirm">New Password Confirm</label>
+					<input class="ui-input" type="password" name="new_password_confirm" id="new_password_confirm" title="Password mismatch!" />
+				</div>
+			</div>
+			{/if}
+		</div>
+		
+		<div class="right" style="width: 60%;">
+			
+			<div style="float: right; width: 95%;">
+			
+				{if $S_ADMINISTRATOR or ($S_MANAGER and $U_EDIT_USER) or $S_NEW_PROFILE}
+				
+				<input type="hidden" name="process_permissions" value="1" />
+				
+				<div class="row">
+					<label for="group_id">User Roles&nbsp;<span class="help ico" title="Remember that permissions layer upon themselves.">&nbsp;</span></label>
+					<select name="user_groups[]" multiple="multiple" id="group_id">
+					{section name=group loop="$grouprow"}
+						<option value="{$grouprow[group].GROUP_ID}"{if $grouprow[group].GROUP_MEMBER} selected="selected"{/if}>{$grouprow[group].GROUP_NAME}</option>
+					{/section}
+					</select>
+				</div>
+
+				<div id="user-permissions" style="display: {if ($PROFILE_IS_STAFF or $PROFILE_IS_MANAGER or $PROFILE_IS_CONTRACTOR or $PROFILE_IS_ADMINISTRATOR) and $S_EDIT_PROFILE}block{else}none{/if}">
+				
+					<label>Global Permissions</label>
+					<strong>Note: Some permissions are overwritten <em>or</em> automatic by user role!</strong>
+
+					{include file="template/auth_options_list.html"}
+					
+				</div>
+				
+				{else}
+
+					<h3>Roles</h3>
+					<ul class="pretty">
+					{section name=group loop="$grouprow"}
+						{if $grouprow[group].GROUP_MEMBER}<li class="{$grouprow[group].GROUP_ICO}">{$grouprow[group].GROUP_NAME}</li>{/if}
+					{sectionelse}
+						<li class="soft-error"><strong>{$PROFILE_USER_REALNAME} has no dashboard role!</strong></li>
+					{/section}
+					</ul>
+
+					<h3>Global Permissions</h3>
+					
+					<ul class="pretty">
+					{section name=option loop="$user_permissions"}
+					<li class="{$user_permissions[option].AUTH_ICON}">{$user_permissions[option].AUTH_OPTION_CLEAN}</li>
+					{sectionelse}
+					<li class="soft-error"><strong>{$PROFILE_USER_REALNAME} has no permissions!</strong></li>
+					{/section}
+					</ul>
+				{/if}
+				
+			</div>
+			
+		</div>
+
+	</div>
+
+	<div id="profile-errors" class="row"></div>
+	
+	<div class="buttons row">
+		<button type="submit" name="save" id="saveprofile">
+			<span class="save">Save Profile</span>
+		</button>
+	</div>
+	
+	</fieldset>
+</form>
+
+<div style="clear: both;"></div>
+
+{if $S_EDIT_PROFILE}
+	{if $SHOW_CLIENT_LIST}
+		{include file="template/dashboard_myclients.html"}
+	{else}
+		<h3>{if $PROFILE_USER_ID eq $USER_ID}My{else}User{/if} Companies</h3>
+
+		<div class="ui-widget row">
+			<div class="ui-state-highlight ui-corner-all pad"> 
+				<span class="soft-error ico">&nbsp;</span>{$PROFILE_USER_REALNAME} is not a member of any company or organization.
+			</div>
+		</div>
+	{/if}
+{/if}
+
+{/if}
+
+<div style="clear: both;"></div>

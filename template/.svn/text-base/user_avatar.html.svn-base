@@ -1,0 +1,3 @@
+<div class="avatar ui-widget-content ui-corner-all pad-light" style="float: left; margin: 0 1em 0 0;">
+	<img alt="{if $S_PROFILE}{$PROFILE_USER_REALNAME}{else}{$AUTHOR_REALNAME}{/if}" src="/avatars/{if $S_PROFILE}{$PROFILE_USER_AVATAR}{else}{$AUTHOR_AVATAR}{/if}" class="ui-widget-content ui-corner-all" />
+</div>
